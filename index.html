@@ -89,49 +89,7 @@
     .ur-text { display: none; }
     body.urdu-mode .en-text { display: none; }
     body.urdu-mode .ur-text { display: inline; }
-    #lang-toggle { display: none; } /* old toggle hidden — replaced by mechanical */
-
-    /* ══ MECHANICAL LANGUAGE TOGGLE ══ */
-    .lang-switcher {
-      position: relative;
-      display: flex;
-      align-items: center;
-      background: linear-gradient(145deg, #1a2535, #2a3a50);
-      border-radius: 999px;
-      padding: 4px;
-      box-shadow:
-        0 4px 15px rgba(0,0,0,0.4),
-        0 1px 0 rgba(255,255,255,0.08) inset,
-        0 -2px 0 rgba(0,0,0,0.3) inset;
-      border: 1px solid rgba(255,153,0,0.25);
-      cursor: pointer;
-      gap: 0;
-      flex-shrink: 0;
-    }
-    .lang-switcher:hover { border-color: rgba(255,153,0,0.6); }
-    .lang-option {
-      position: relative; z-index: 2;
-      padding: 7px 16px; border-radius: 999px;
-      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em;
-      transition: color 0.25s ease; user-select: none;
-      font-family: 'DM Sans', sans-serif !important;
-      line-height: 1 !important; white-space: nowrap;
-    }
-    .lang-option.active  { color: #232F3E; }
-    .lang-option.inactive { color: rgba(255,255,255,0.45); }
-    .lang-option.inactive:hover { color: rgba(255,255,255,0.75); }
-    .lang-thumb {
-      position: absolute; top: 4px; bottom: 4px; border-radius: 999px;
-      background: linear-gradient(145deg, #FFB84D, #FF9900, #e68900);
-      box-shadow: 0 3px 10px rgba(255,153,0,0.5), 0 1px 0 rgba(255,255,255,0.3) inset, 0 -1px 0 rgba(0,0,0,0.2) inset;
-      transition: left 0.28s cubic-bezier(0.34,1.56,0.64,1), width 0.28s cubic-bezier(0.34,1.56,0.64,1);
-      z-index: 1;
-      pointer-events: none; /* ← critical: never intercept clicks */
-    }
-    /* Ensure every child of the switcher passes clicks through */
-    .lang-switcher * { pointer-events: none; }
-    .lang-switcher { pointer-events: auto; cursor: pointer; }
-    .lang-divider { width:1px; height:16px; background:rgba(255,255,255,0.12); flex-shrink:0; }
+    #lang-toggle { display: none; } /* legacy hidden */
   </style>
 </head>
 <body class="min-h-screen relative">
@@ -150,13 +108,32 @@
       <a href="#roadmaps" class="text-slate-mid hover:text-slate font-body text-sm font-medium transition-colors">Roadmaps</a>
       <a href="#about"    class="text-slate-mid hover:text-slate font-body text-sm font-medium transition-colors">About</a>
       <a href="#topics"   class="px-4 py-2 rounded-lg bg-slate text-white text-sm font-medium hover:bg-amber-light hover:text-slate transition-all duration-200">Start Reading →</a>
-      <!-- Mechanical Language Switcher -->
-      <div class="lang-switcher" id="langSwitcher" onclick="switchLang()" title="اردو میں پڑھیں">
-        <div class="lang-thumb" id="langThumb"></div>
-        <span class="lang-option active"   id="optEn">EN</span>
-        <div class="lang-divider"></div>
-        <span class="lang-option inactive" id="optUr" style="font-family:'Noto Nastaliq Urdu',serif!important; font-size:0.82rem;">اردو</span>
-      </div>
+      <!-- Language toggle — simple anchor, cannot fail -->
+      <a href="index-ur.html" id="urdu-btn" style="
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(145deg, #1a2535, #2a3a50);
+        border: 1.5px solid rgba(255,153,0,0.5);
+        border-radius: 999px;
+        padding: 8px 18px;
+        color: #FFB84D;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-decoration: none;
+        cursor: pointer;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.07) inset;
+        transition: background 0.2s, border-color 0.2s, transform 0.15s;
+        white-space: nowrap;
+      "
+      onmouseover="this.style.background='linear-gradient(145deg,#FF9900,#FFB84D)'; this.style.color='#232F3E'; this.style.transform='translateY(-1px)';"
+      onmouseout="this.style.background='linear-gradient(145deg,#1a2535,#2a3a50)'; this.style.color='#FFB84D'; this.style.transform='translateY(0)';">
+        <span style="font-size:0.7rem; opacity:0.6; font-family:'DM Sans',sans-serif;">EN</span>
+        <span style="width:1px; height:12px; background:rgba(255,153,0,0.3); display:inline-block;"></span>
+        <span style="font-family:'Noto Nastaliq Urdu',serif; font-size:0.9rem; line-height:1;">اردو</span>
+      </a>
     </div>
     <button id="hamburger" onclick="toggleMenu()" class="md:hidden flex flex-col gap-1.5 p-1.5" aria-label="Menu">
       <span class="w-5 h-0.5 bg-slate block rounded"></span>
@@ -169,12 +146,11 @@
     <a href="#roadmaps" onclick="closeMenu()" class="py-2 text-slate font-medium border-b border-slate/08 block">Roadmaps</a>
     <a href="#about"    onclick="closeMenu()" class="py-2 text-slate font-medium block">About</a>
     <a href="#topics"   onclick="closeMenu()" class="mt-1 px-4 py-2.5 rounded-lg bg-slate text-white text-sm font-medium text-center block">Start Reading →</a>
-    <div class="lang-switcher mt-2 w-fit" id="langSwitcherMobile" onclick="switchLang()">
-      <div class="lang-thumb"></div>
-      <span class="lang-option active"   id="optEnMobile">EN</span>
-      <div class="lang-divider"></div>
-      <span class="lang-option inactive" id="optUrMobile" style="font-family:'Noto Nastaliq Urdu',serif!important; font-size:0.82rem;">اردو</span>
-    </div>
+    <a href="index-ur.html" style="margin-top:8px; display:inline-flex; align-items:center; gap:6px; background:linear-gradient(145deg,#1a2535,#2a3a50); border:1.5px solid rgba(255,153,0,0.5); border-radius:999px; padding:8px 18px; color:#FFB84D; font-family:'DM Sans',sans-serif; font-size:0.82rem; font-weight:700; text-decoration:none;">
+      <span style="opacity:0.6;">EN</span>
+      <span style="width:1px;height:12px;background:rgba(255,153,0,0.3);display:inline-block;"></span>
+      <span style="font-family:'Noto Nastaliq Urdu',serif; font-size:0.9rem; line-height:1;">اردو</span>
+    </a>
   </div>
 </nav>
 
@@ -783,50 +759,6 @@
   window.addEventListener('scroll', () => {
     const nav = document.getElementById('navbar');
     nav.style.boxShadow = window.scrollY > 10 ? '0 4px 24px rgba(35,47,62,0.10)' : 'none';
-  });
-
-  /* ══ MECHANICAL TOGGLE — bulletproof version ══ */
-  function positionThumb(sw) {
-    if (!sw) return;
-    var thumb = sw.querySelector('.lang-thumb');
-    var optEn = sw.querySelectorAll('.lang-option')[0];
-    if (!thumb || !optEn) return;
-    var swRect = sw.getBoundingClientRect();
-    var enRect = optEn.getBoundingClientRect();
-    thumb.style.left  = (enRect.left - swRect.left - 4) + 'px';
-    thumb.style.width = (enRect.width + 8) + 'px';
-  }
-
-  function switchLang() {
-    /* Slide thumb visually */
-    document.querySelectorAll('.lang-switcher').forEach(function(sw) {
-      var thumb = sw.querySelector('.lang-thumb');
-      var opts  = sw.querySelectorAll('.lang-option');
-      if (opts.length >= 2 && thumb) {
-        var swRect = sw.getBoundingClientRect();
-        var urRect = opts[1].getBoundingClientRect();
-        thumb.style.left  = (urRect.left - swRect.left - 4) + 'px';
-        thumb.style.width = (urRect.width + 8) + 'px';
-        opts[0].classList.replace('active',   'inactive');
-        opts[1].classList.replace('inactive', 'active');
-      }
-    });
-    /* Navigate after animation completes */
-    localStorage.setItem('oc_lang', 'ur');
-    setTimeout(function() {
-      window.location.href = 'index-ur.html';
-    }, 300);
-  }
-
-  document.addEventListener('DOMContentLoaded', function() {
-    localStorage.setItem('oc_lang', 'en');
-    setTimeout(function() {
-      document.querySelectorAll('.lang-switcher').forEach(positionThumb);
-    }, 50);
-  });
-
-  window.addEventListener('resize', function() {
-    document.querySelectorAll('.lang-switcher').forEach(positionThumb);
   });
 </script>
 </body>
