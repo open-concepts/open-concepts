@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <style>
@@ -126,7 +126,11 @@
       box-shadow: 0 3px 10px rgba(255,153,0,0.5), 0 1px 0 rgba(255,255,255,0.3) inset, 0 -1px 0 rgba(0,0,0,0.2) inset;
       transition: left 0.28s cubic-bezier(0.34,1.56,0.64,1), width 0.28s cubic-bezier(0.34,1.56,0.64,1);
       z-index: 1;
+      pointer-events: none; /* ← critical: never intercept clicks */
     }
+    /* Ensure every child of the switcher passes clicks through */
+    .lang-switcher * { pointer-events: none; }
+    .lang-switcher { pointer-events: auto; cursor: pointer; }
     .lang-divider { width:1px; height:16px; background:rgba(255,255,255,0.12); flex-shrink:0; }
   </style>
 </head>
@@ -781,10 +785,12 @@
     nav.style.boxShadow = window.scrollY > 10 ? '0 4px 24px rgba(35,47,62,0.10)' : 'none';
   });
 
-  /* ══ MECHANICAL TOGGLE — English page, EN is active ══ */
-  function positionThumb(sw, thumb) {
-    if (!sw || !thumb) return;
-    var optEn = sw.querySelector('#optEn') || sw.querySelector('[id$="En"]') || sw.querySelectorAll('.lang-option')[0];
+  /* ══ MECHANICAL TOGGLE — bulletproof version ══ */
+  function positionThumb(sw) {
+    if (!sw) return;
+    var thumb = sw.querySelector('.lang-thumb');
+    var optEn = sw.querySelectorAll('.lang-option')[0];
+    if (!thumb || !optEn) return;
     var swRect = sw.getBoundingClientRect();
     var enRect = optEn.getBoundingClientRect();
     thumb.style.left  = (enRect.left - swRect.left - 4) + 'px';
@@ -792,45 +798,35 @@
   }
 
   function switchLang() {
-    /* Animate thumb to اردو then navigate */
-    ['langSwitcher','langSwitcherMobile'].forEach(function(id) {
-      var sw = document.getElementById(id);
-      if (!sw) return;
+    /* Slide thumb visually */
+    document.querySelectorAll('.lang-switcher').forEach(function(sw) {
       var thumb = sw.querySelector('.lang-thumb');
-      var optUr = sw.querySelector('[id$="Ur"]') || sw.querySelectorAll('.lang-option')[1];
-      var optEn = sw.querySelector('[id$="En"]') || sw.querySelectorAll('.lang-option')[0];
-      var swRect = sw.getBoundingClientRect();
-      var urRect = optUr.getBoundingClientRect();
-      if (thumb) {
+      var opts  = sw.querySelectorAll('.lang-option');
+      if (opts.length >= 2 && thumb) {
+        var swRect = sw.getBoundingClientRect();
+        var urRect = opts[1].getBoundingClientRect();
         thumb.style.left  = (urRect.left - swRect.left - 4) + 'px';
         thumb.style.width = (urRect.width + 8) + 'px';
+        opts[0].classList.replace('active',   'inactive');
+        opts[1].classList.replace('inactive', 'active');
       }
-      optEn.classList.replace('active', 'inactive');
-      optUr.classList.replace('inactive', 'active');
     });
+    /* Navigate after animation completes */
     localStorage.setItem('oc_lang', 'ur');
-    setTimeout(function() { window.location.href = 'index-ur.html'; }, 320);
+    setTimeout(function() {
+      window.location.href = 'index-ur.html';
+    }, 300);
   }
 
   document.addEventListener('DOMContentLoaded', function() {
-    requestAnimationFrame(function() {
-      requestAnimationFrame(function() {
-        var sw    = document.getElementById('langSwitcher');
-        var thumb = sw ? sw.querySelector('.lang-thumb') : null;
-        positionThumb(sw, thumb);
-        /* mobile */
-        var swm   = document.getElementById('langSwitcherMobile');
-        var thm   = swm ? swm.querySelector('.lang-thumb') : null;
-        positionThumb(swm, thm);
-      });
-    });
-    /* If user navigated back from Urdu, keep EN active */
     localStorage.setItem('oc_lang', 'en');
+    setTimeout(function() {
+      document.querySelectorAll('.lang-switcher').forEach(positionThumb);
+    }, 50);
   });
 
   window.addEventListener('resize', function() {
-    var sw = document.getElementById('langSwitcher');
-    positionThumb(sw, sw ? sw.querySelector('.lang-thumb') : null);
+    document.querySelectorAll('.lang-switcher').forEach(positionThumb);
   });
 </script>
 </body>
