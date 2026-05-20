@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <style>
+    @font-face {
+      font-family: 'MySignature';
+      src: url('signature.ttf');
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'JameelNoori';
+      src: url('Jameel Noori Nastaleeq Kasheeda.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linux & Bash — Open-Concepts اردو</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600&family=Roboto+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream:         '#FDFBF7',
+            'cream-dark':  '#F5F0E8',
+            slate:         '#232F3E',
+            'slate-mid':   '#3D4F60',
+            'slate-light': '#6B7F91',
+            amber:         '#FF9900',
+            'amber-light': '#FFB84D',
+            'amber-pale':  '#FFF3DC',
+          },
+          fontFamily: {
+            display: ['Fraunces', 'Georgia', 'serif'],
+            body:    ['DM Sans', 'sans-serif'],
+            mono:    ['Roboto Mono', 'monospace'],
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'JameelNoori', serif;
+      background-color: #FDFBF7;
+      color: #232F3E;
+      overflow-x: hidden;
+      direction: rtl;
+    }
+
+    /* Keep code, terminal, and LTR elements unaffected */
+    code, .terminal-body, .font-mono, pre,
+    .tab-btn, .toc-link, .tier-badge,
+    .lang-option { font-family: 'Roboto Mono', monospace !important; direction: ltr; }
+
+    /* Nav and logo stay LTR */
+    .logo-text { font-family: 'Fraunces', serif !important; direction: ltr; }
+
+    /* Urdu prose areas */
+    .ur-text {
+      font-family: 'JameelNoori', serif;
+      line-height: 2.4;
+      font-size: 1.08rem;
+    }
+
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: 0.5;
+    }
+
+    #navbar {
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      background: rgba(253,251,247,0.88);
+      border-bottom: 1px solid rgba(35,47,62,0.08);
+    }
+
+    .tab-btn {
+      transition: all 0.2s ease; border-bottom: 3px solid transparent;
+      cursor: pointer; white-space: nowrap;
+      font-family: 'Roboto Mono', monospace !important;
+      direction: ltr;
+    }
+    .tab-btn.active { border-bottom: 3px solid #FF9900; color: #232F3E; font-weight: 700; }
+    .tab-btn:hover:not(.active) { color: #232F3E; }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; animation: fadeUp 0.35s ease both; }
+
+    .analogy-card {
+      background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+      border-right: 5px solid #FF9900;
+    }
+    .pro-card {
+      background: #F8FAFC; border: 1px solid #E2E8F0;
+      border-right: 5px solid #232F3E;
+    }
+    .info-card {
+      border: 1.5px solid rgba(35,47,62,0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .info-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(35,47,62,0.10);
+      border-color: rgba(255,153,0,0.35);
+    }
+
+    .tier-badge {
+      font-family: 'Roboto Mono', monospace;
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      direction: ltr; display: inline-block;
+    }
+
+    .oc-table { border-collapse: collapse; width: 100%; }
+    .oc-table th {
+      background: #232F3E; color: #fff;
+      font-family: 'JameelNoori', serif; font-weight: 600; font-size: 0.95rem;
+      padding: 10px 14px; text-align: right;
+    }
+    .oc-table td {
+      padding: 10px 14px; font-size: 0.95rem; color: #3D4F60;
+      border-bottom: 1px solid #E2E8F0;
+      font-family: 'JameelNoori', serif;
+      line-height: 2;
+    }
+    .oc-table td code { font-family: 'Roboto Mono', monospace !important; direction: ltr; display: inline-block; }
+    .oc-table tr:last-child td { border-bottom: none; }
+    .oc-table tr:nth-child(even) td { background: #F8F6F2; }
+    .oc-table tr:hover td { background: #FFF3DC; }
+
+    code {
+      font-family: 'Roboto Mono', monospace;
+      background: rgba(35,47,62,0.07); color: #232F3E;
+      padding: 2px 6px; border-radius: 4px; font-size: 0.82em;
+      direction: ltr; display: inline-block;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up  { animation: fadeUp 0.5s ease both; }
+    .delay-1  { animation-delay: 0.08s; }
+    .delay-2  { animation-delay: 0.16s; }
+    .delay-3  { animation-delay: 0.24s; }
+
+    .accent-stripe { background: linear-gradient(90deg, #FF9900 0%, #FFB84D 50%, #232F3E 100%); }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #FDFBF7; }
+    ::-webkit-scrollbar-thumb { background: #D1C9BC; border-radius: 99px; }
+
+    .chart-container {
+      position: relative; width: 100%; max-width: 820px;
+      margin: 0 auto; height: 340px; max-height: 380px;
+      background: white; border-radius: 1rem; padding: 1rem;
+      box-shadow: 0 4px 20px rgba(35,47,62,0.08); border: 1px solid #E2E8F0;
+    }
+    @media (max-width: 768px) { .chart-container { height: 260px; } }
+
+    #mobile-menu { display: none; }
+    #mobile-menu.open { display: flex; }
+
+    #read-progress {
+      position: fixed; top: 64px; left: 0; height: 3px;
+      background: linear-gradient(90deg, #FF9900, #FFB84D);
+      z-index: 49; width: 0%; transition: width 0.1s linear;
+    }
+
+    .toc-link {
+      transition: color 0.15s, padding-right 0.15s;
+      border-right: 2px solid transparent;
+      font-family: 'JameelNoori', serif !important;
+      font-size: 1rem;
+      direction: rtl;
+    }
+    .toc-link:hover, .toc-link.active {
+      color: #FF9900; border-right-color: #FF9900; padding-right: 8px;
+    }
+
+    /* terminal chrome */
+    .terminal-window {
+      background: #1a1f2e; border-radius: 0.875rem; overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    }
+    .terminal-bar {
+      background: #2d3346; padding: 10px 14px;
+      display: flex; align-items: center; gap: 6px;
+      direction: ltr;
+    }
+    .terminal-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .terminal-body {
+      padding: 18px 20px; font-family: 'Roboto Mono', monospace;
+      font-size: 0.78rem; line-height: 1.75; color: #a8d8a8;
+      direction: ltr; text-align: left;
+    }
+    .terminal-body .cmd  { color: #FFB84D; }
+    .terminal-body .flag { color: #79c8e6; }
+    .terminal-body .arg  { color: #e8c07d; }
+    .terminal-body .cmt  { color: #5c7a6b; font-style: italic; }
+    .terminal-body .ok   { color: #6fcf97; }
+    .terminal-body .warn { color: #f2c94c; }
+    .terminal-body .path { color: #c084fc; }
+    .terminal-body .perm { color: #f87171; }
+
+    /* filesystem tree node */
+    .fs-node {
+      transition: background 0.15s, border-color 0.15s;
+      border-right: 3px solid transparent;
+    }
+    .fs-node:hover {
+      background: #FFF3DC;
+      border-right-color: #FF9900;
+    }
+
+    /* permission bit */
+    .pbit-r  { color: #16a34a; font-weight: 700; }
+    .pbit-w  { color: #dc2626; font-weight: 700; }
+    .pbit-x  { color: #2563eb; font-weight: 700; }
+    .pbit-no { color: #9ca3af; }
+
+    .boot-step {
+      border-right: 3px solid #FF9900;
+      transition: background 0.2s;
+    }
+    .boot-step:hover { background: #FFF3DC; }
+
+    /* Headings use Jameel Noori */
+    h1, h2, h3, h4 {
+      font-family: 'JameelNoori', serif !important;
+    }
+
+    /* ══ LANGUAGE SWITCHER ══ */
+    .lang-switcher {
+      position: relative; display: flex; align-items: center;
+      background: linear-gradient(145deg, #1a2535, #2a3a50);
+      border-radius: 999px; padding: 4px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.08) inset, 0 -2px 0 rgba(0,0,0,0.3) inset;
+      border: 1px solid rgba(255,153,0,0.25); gap: 0; cursor: pointer;
+      direction: ltr;
+    }
+    .lang-switcher:hover { border-color: rgba(255,153,0,0.6); }
+    .lang-option {
+      position: relative; z-index: 2; padding: 7px 16px; border-radius: 999px;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em;
+      transition: color 0.25s ease; user-select: none;
+      font-family: 'DM Sans', sans-serif !important;
+      line-height: 1 !important; white-space: nowrap;
+    }
+    .lang-option.active  { color: #232F3E; }
+    .lang-option.inactive { color: rgba(255,255,255,0.45); }
+    .lang-option.inactive:hover { color: rgba(255,255,255,0.75); }
+    .lang-thumb {
+      position: absolute; top: 4px; bottom: 4px; border-radius: 999px;
+      background: linear-gradient(145deg, #FFB84D, #FF9900, #e68900);
+      box-shadow: 0 3px 10px rgba(255,153,0,0.5), 0 1px 0 rgba(255,255,255,0.3) inset, 0 -1px 0 rgba(0,0,0,0.2) inset;
+      transition: left 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 1;
+    }
+  </style>
+</head>
+<body class="min-h-screen relative antialiased">
+
+<div id="read-progress"></div>
+
+<!-- ═══════════════════ NAVBAR ═══════════════════ -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 h-16 flex items-center justify-between flex-row-reverse">
+    <a href="index-ur.html" class="flex items-center gap-2.5 group flex-row-reverse">
+      <div class="w-8 h-8 rounded-lg bg-slate flex items-center justify-center group-hover:bg-amber transition-colors duration-200">
+        <span class="text-white font-bold text-sm logo-text">OC</span>
+      </div>
+      <span class="font-semibold text-slate text-lg tracking-tight logo-text">Open<span class="text-amber">·</span>Concepts</span>
+    </a>
+    <div class="hidden md:flex items-center gap-7 flex-row-reverse">
+      <a href="index-ur.html#topics"   class="text-slate-mid hover:text-slate text-sm font-medium transition-colors ur-text">تمام موضوعات</a>
+      <a href="index-ur.html#roadmaps" class="text-slate-mid hover:text-slate text-sm font-medium transition-colors ur-text">راستے</a>
+      <a href="index-ur.html#about"    class="text-slate-mid hover:text-slate text-sm font-medium transition-colors ur-text">بارے میں</a>
+
+      <!-- Language Switcher -->
+      <div class="lang-switcher" id="langSwitcher">
+        <div id="langThumb" class="lang-thumb"></div>
+        <span id="optEn" class="lang-option inactive" onclick="switchLang()">EN</span>
+        <span style="width:1px; height:16px; background:rgba(255,255,255,0.12); flex-shrink:0;"></span>
+        <span id="optUr" class="lang-option active" style="font-family:'JameelNoori',serif !important; font-size:0.9rem;">اردو</span>
+      </div>
+
+      <a href="index-ur.html#topics" class="mr-2 px-4 py-2 rounded-lg bg-slate text-white text-sm font-medium hover:bg-amber-light hover:text-slate transition-all duration-200 ur-text">← تمام موضوعات</a>
+    </div>
+    <button id="hamburger" onclick="toggleMenu()" class="md:hidden flex flex-col gap-1.5 p-1.5" aria-label="Menu">
+      <span class="w-5 h-0.5 bg-slate block rounded"></span>
+      <span class="w-5 h-0.5 bg-slate block rounded"></span>
+      <span class="w-3.5 h-0.5 bg-slate block rounded"></span>
+    </button>
+  </div>
+  <div id="mobile-menu" class="md:hidden flex-col px-5 pb-5 pt-2 gap-3 bg-cream border-t border-slate/10">
+    <a href="index-ur.html#topics"   onclick="closeMenu()" class="py-2 text-slate font-medium border-b border-slate/10 block ur-text">تمام موضوعات</a>
+    <a href="index-ur.html#roadmaps" onclick="closeMenu()" class="py-2 text-slate font-medium border-b border-slate/10 block ur-text">راستے</a>
+    <a href="index-ur.html#about"    onclick="closeMenu()" class="py-2 text-slate font-medium block ur-text">بارے میں</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<header class="relative pt-28 pb-14 px-5 overflow-hidden">
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full opacity-15 pointer-events-none"
+       style="background: radial-gradient(ellipse at center, #FF9900 0%, transparent 70%);"></div>
+  <div class="relative z-10 max-w-4xl mx-auto text-right">
+
+    <div class="fade-up flex items-center gap-2 text-xs text-slate-light font-medium mb-5 flex-wrap flex-row-reverse">
+      <a href="index-ur.html" class="hover:text-amber transition-colors ur-text">ہوم</a>
+      <span>›</span>
+      <span class="px-2 py-0.5 rounded-full bg-amber-pale text-amber border border-amber/25 text-[10px] uppercase tracking-wider font-semibold">🐧 Linux</span>
+      <span>›</span>
+      <span class="text-slate-mid ur-text">Linux & Bash</span>
+    </div>
+
+    <h1 class="fade-up delay-1 font-bold text-4xl md:text-6xl text-slate leading-tight mb-4 ur-text" style="letter-spacing:0.01em;">
+      Linux & Bash کیا ہے؟<br><span class="text-amber" style="font-style:normal;">ایک مکمل گائیڈ</span>
+    </h1>
+
+    <p class="fade-up delay-2 text-slate-mid text-lg md:text-xl max-w-2xl leading-relaxed mb-7 ur-text" style="margin-right:0; margin-left:auto;">
+      بند recipe books سے لے کر دنیا کے open کچن تک — وہ operating system جو internet کا ۹۰ فیصد چلاتا ہے، اور وہ command language جو اسے کنٹرول کرتی ہے۔
+    </p>
+
+    <div class="fade-up delay-3 flex flex-wrap items-center gap-4 text-sm text-slate-light flex-row-reverse">
+      <span class="flex items-center gap-1.5 ur-text">📅 اپڈیٹ 2026</span>
+      <span class="w-1 h-1 rounded-full bg-slate-light/50"></span>
+      <span class="flex items-center gap-1.5 ur-text">⏱️ تقریباً ۲۴ منٹ کا مطالعہ</span>
+      <span class="w-1 h-1 rounded-full bg-slate-light/50"></span>
+      <span class="flex items-center gap-1.5" style="direction:ltr;">🐧 Linux · Bash · DevOps</span>
+    </div>
+  </div>
+</header>
+
+<div class="accent-stripe h-0.5 w-full opacity-60"></div>
+
+<!-- ═══════════════════ OVERVIEW CARDS ═══════════════════ -->
+<section class="py-10 px-5 bg-cream-dark/60">
+  <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="info-card bg-white rounded-2xl p-5 text-center">
+      <div class="text-3xl mb-2">🐧</div>
+      <p class="font-bold text-slate text-base leading-tight ur-text">سن ۱۹۹۱ میں بنا</p>
+      <p class="text-slate-light text-xs mt-1 ur-text">Linus Torvalds نے بنایا</p>
+    </div>
+    <div class="info-card bg-white rounded-2xl p-5 text-center">
+      <div class="text-3xl mb-2">🔓</div>
+      <p class="font-bold text-slate text-base leading-tight ur-text">Open Source</p>
+      <p class="text-slate-light text-xs mt-1 ur-text">recipe سب کے لیے مفت</p>
+    </div>
+    <div class="info-card bg-white rounded-2xl p-5 text-center">
+      <div class="text-3xl mb-2">🌍</div>
+      <p class="font-bold text-slate text-base leading-tight ur-text">۹۰٪ Servers</p>
+      <p class="text-slate-light text-xs mt-1 ur-text">جدید internet کی طاقت</p>
+    </div>
+    <div class="info-card bg-white rounded-2xl p-5 text-center">
+      <div class="text-3xl mb-2">⌨️</div>
+      <p class="font-bold text-slate text-base leading-tight">Bash Shell</p>
+      <p class="text-slate-light text-xs mt-1 ur-text">انسان سے kernel تک ترجمان</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
+<div class="max-w-7xl mx-auto px-5 md:px-8 py-12 flex gap-10 flex-row-reverse">
+
+  <!-- TOC Sidebar -->
+  <aside class="hidden xl:block w-64 flex-shrink-0">
+    <div class="sticky top-24">
+      <p class="text-[10px] uppercase tracking-widest text-amber font-bold mb-3 ur-text" style="font-family:'Roboto Mono',monospace; font-size:0.7rem;">اس صفحے پر</p>
+      <nav class="flex flex-col gap-1.5 text-sm text-slate-light font-medium">
+        <a onclick="switchTab('history')"      class="toc-link py-0.5 cursor-pointer active" data-tab="history">① تاریخ اور آغاز</a>
+        <a onclick="switchTab('architecture')" class="toc-link py-0.5 cursor-pointer" data-tab="architecture">② Kernel اور Shell</a>
+        <a onclick="switchTab('filesystem')"   class="toc-link py-0.5 cursor-pointer" data-tab="filesystem">③ File System</a>
+        <a onclick="switchTab('navigation')"   class="toc-link py-0.5 cursor-pointer" data-tab="navigation">④ Navigation Commands</a>
+        <a onclick="switchTab('actions')"      class="toc-link py-0.5 cursor-pointer" data-tab="actions">⑤ Action Commands</a>
+        <a onclick="switchTab('reading')"      class="toc-link py-0.5 cursor-pointer" data-tab="reading">⑥ پڑھنا اور تلاش کرنا</a>
+        <a onclick="switchTab('permissions')"  class="toc-link py-0.5 cursor-pointer" data-tab="permissions">⑦ Permissions</a>
+        <a onclick="switchTab('pipes')"        class="toc-link py-0.5 cursor-pointer" data-tab="pipes">⑧ Pipes اور Redirection</a>
+        <a onclick="switchTab('packages')"     class="toc-link py-0.5 cursor-pointer" data-tab="packages">⑨ Packages اور Editors</a>
+        <a onclick="switchTab('boot')"         class="toc-link py-0.5 cursor-pointer" data-tab="boot">⑩ Boot Process</a>
+      </nav>
+      <a href="index-ur.html" class="mt-8 flex items-center gap-2 text-xs text-slate-light hover:text-amber transition-colors font-semibold ur-text flex-row-reverse">← ڈیشبورڈ پر واپس جائیں</a>
+    </div>
+  </aside>
+
+  <!-- Article -->
+  <main class="flex-1 min-w-0">
+
+    <!-- Tabs -->
+    <div class="overflow-x-auto -mx-1 px-1 mb-8">
+      <div class="flex gap-1 bg-white rounded-2xl border border-slate/10 p-1.5 w-max shadow-sm" style="direction:ltr;">
+        <button onclick="switchTab('history')"      class="tab-btn active  px-3 py-2.5 rounded-xl text-xs text-slate-mid" data-tab="history">📜 History</button>
+        <button onclick="switchTab('architecture')" class="tab-btn         px-3 py-2.5 rounded-xl text-xs text-slate-mid" data-tab="architecture">🧅 Architecture</button>
+        <button onclick="switchTab('filesystem')"   class="tab-btn         px-3 py-2.5 rounded-xl text-xs text-slate-mid" data-tab="filesystem">🌳 File System</button>
+        <button onclick="switchTab('navigation')"   class="tab-btn         px-3 py-2.5 rounded-xl text-xs text-slate-mid" data-tab="navigation">🧭 Navigation</button>
+        <button onclick="switchTab('actions')"      class="tab-btn         px-3 py-2.5 rounded-xl text-xs text-slate-mid" data-tab="actions">✂️ Actions</button>
+        <button onclick="switchTab('reading')"      class="tab-btn         px-3 py-2.5 rounded-xl text-xs text-slate-mid" data-tab="reading">🔍 Read & Search</button>
+        <button onclick="switchTab('permissions')"  class="tab-btn         px-3 py-2.5 rounded-xl text-xs text-slate-mid" data-tab="permissions">🔐 Permissions</button>
+        <button onclick="switchTab('pipes')"        class="tab-btn         px-3 py-2.5 rounded-xl text-xs text-slate-mid" data-tab="pipes">🔗 Pipes</button>
+        <button onclick="switchTab('packages')"     class="tab-btn         px-3 py-2.5 rounded-xl text-xs text-slate-mid" data-tab="packages">📦 Packages</button>
+        <button onclick="switchTab('boot')"         class="tab-btn         px-3 py-2.5 rounded-xl text-xs text-slate-mid" data-tab="boot">⚡ Boot Process</button>
+      </div>
+    </div>
+
+
+    <!-- ══ TAB 1: HISTORY ══ -->
+    <div id="tab-history" class="tab-panel active">
+
+      <div class="analogy-card rounded-2xl p-6 md:p-8 mb-8">
+        <div class="flex items-start gap-4 flex-row-reverse">
+          <div class="text-4xl flex-shrink-0">📜</div>
+          <div class="text-right">
+            <p class="text-[10px] uppercase tracking-widest text-amber font-bold mb-1" style="font-family:'Roboto Mono',monospace;">آسان وضاحت</p>
+            <h2 class="font-bold text-2xl text-slate mb-3 ur-text">بند recipe books کا زمانہ</h2>
+            <p class="text-slate-mid leading-relaxed mb-3 ur-text">Linux سے پہلے، computing ایسی تھی جیسے کوئی restaurant ہو جہاں recipe ایک بند تجوری میں رکھی ہو۔ آپ کھانا کھا سکتے تھے، لیکن یہ نہیں دیکھ سکتے تھے کہ کیسے بنا یا recipe بدل سکتے تھے۔ ۱۹۴۰ اور ۱۹۵۰ کی دہائی کے computers میں کوئی operating system نہیں تھا — program ایک ایک کرکے physical switches سے load ہوتے تھے۔</p>
+            <p class="text-slate-mid leading-relaxed ur-text">سن ۱۹۹۱ میں Finland کے ایک طالب علم <strong>Linus Torvalds</strong> نے ایک مفت اور کھلا متبادل بنایا — Linux kernel۔ انہوں نے سب کے لیے recipe کھول دی۔</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Problems with proprietary systems -->
+      <div class="mb-10">
+        <h2 class="font-bold text-2xl text-slate mb-4 flex items-center gap-3 flex-row-reverse ur-text"><span class="text-2xl">🔒</span> Proprietary Systems کے تین مسائل</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+          <div class="info-card bg-white rounded-2xl p-6 text-right">
+            <div class="text-3xl mb-3">📖</div>
+            <h3 class="font-semibold text-lg text-slate mb-2 ur-text">بند Recipes</h3>
+            <p class="text-slate-mid text-sm leading-relaxed ur-text">Source code چھپا کر رکھا جاتا تھا۔ لوگ خود سے bugs ٹھیک نہیں کر سکتے تھے یا نئی چیزیں نہیں جوڑ سکتے تھے — سب کچھ company کے فیصلے پر منحصر تھا۔</p>
+          </div>
+          <div class="info-card bg-white rounded-2xl p-6 text-right">
+            <div class="text-3xl mb-3">💸</div>
+            <h3 class="font-semibold text-lg text-slate mb-2 ur-text">بہت زیادہ قیمت</h3>
+            <p class="text-slate-mid text-sm leading-relaxed ur-text">یہ systems بہت مہنگے تھے اور عام لوگوں کی پہنچ سے باہر تھے۔ سن ۱۹۸۹ میں ایک portable computer کی قیمت ایک luxury kitchen جتنی تھی۔</p>
+          </div>
+          <div class="info-card bg-white rounded-2xl p-6 text-right">
+            <div class="text-3xl mb-3">🍞</div>
+            <h3 class="font-semibold text-lg text-slate mb-2 ur-text">Portability نہیں تھی</h3>
+            <p class="text-slate-mid text-sm leading-relaxed ur-text">ایک brand کے computer کا program دوسرے brand پر نہیں چلتا تھا۔ جیسے کوئی toaster صرف ایک خاص brand کی bread ہی چاہے — آپ ہمیشہ کے لیے ایک ہی manufacturer تک محدود رہتے تھے۔</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate/10 shadow-sm p-6 md:p-8">
+          <h3 class="font-semibold text-xl text-slate mb-2 text-center ur-text">Proprietary بمقابلہ Open Source — ایک موازنہ</h3>
+          <p class="text-slate-light text-sm text-center mb-6 ur-text">Linux نے ۱۹۹۱ میں recipe کھولنے کے بعد ہر چیز بدل دی۔</p>
+          <div class="chart-container">
+            <canvas id="openSourceChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab-history -->
+
+
+    <!-- ══ TAB 2: ARCHITECTURE ══ -->
+    <div id="tab-architecture" class="tab-panel">
+
+      <div class="analogy-card rounded-2xl p-6 md:p-8 mb-8">
+        <div class="flex items-start gap-4 flex-row-reverse">
+          <div class="text-4xl flex-shrink-0">🧅</div>
+          <div class="text-right">
+            <p class="text-[10px] uppercase tracking-widest text-amber font-bold mb-1" style="font-family:'Roboto Mono',monospace;">آسان وضاحت</p>
+            <h2 class="font-bold text-2xl text-slate mb-3 ur-text">اخروٹ کی مثال</h2>
+            <p class="text-slate-mid leading-relaxed mb-3 ur-text">Operating system ایک اخروٹ کی طرح ہے۔ بالکل درمیان میں ہے <strong>kernel</strong> — سخت خول کے اندر کی گری۔ اس کے گرد ہے <strong>shell</strong> — سخت باہری تہہ۔ Shell آپ کی باتوں کو ایسی زبان میں بدلتی ہے جو گری سمجھ سکے۔ آپ، user، باہر بیٹھے پورا اخروٹ تھامے shell سے بات کر رہے ہیں۔</p>
+            <p class="text-slate-mid leading-relaxed ur-text">Kernel آپ سے کبھی براہ راست بات نہیں کرتا۔ وہ صرف hardware سے بات کرتا ہے۔ Bash وہ shell ہے — ترجمان جو آپ کے plain commands کو وہ زبان میں بدلتا ہے جو Kernel سمجھتا ہے۔</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-10">
+        <h2 class="font-bold text-2xl text-slate mb-5 flex items-center gap-3 flex-row-reverse ur-text"><span class="text-2xl">🍳</span> Kitchen کی مثال: پورا Component Map</h2>
+        <div class="rounded-2xl overflow-hidden border border-slate/10 shadow-sm mb-8">
+          <table class="oc-table">
+            <thead><tr><th>Component</th><th>Kitchen کی مثال</th><th>اصل کام</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Hardware</strong></td><td class="ur-text">اصل باورچی خانہ (چولہا، sink، fridge)</td><td class="ur-text">Computer کے electronic circuits اور physical حصے</td></tr>
+              <tr><td><strong>Kernel</strong></td><td class="ur-text">Master Chef</td><td class="ur-text">Core software جو تمام hardware resources براہ راست سنبھالتا ہے</td></tr>
+              <tr><td><strong>Shell (Bash)</strong></td><td class="ur-text">Waiter / ترجمان</td><td class="ur-text">انسانی commands کو kernel کی زبان میں بدلنے والا</td></tr>
+              <tr><td><strong>User</strong></td><td class="ur-text">Customer</td><td class="ur-text">وہ شخص جو terminal پر commands دیتا ہے</td></tr>
+              <tr><td><strong>Application</strong></td><td class="ur-text">خاص recipe</td><td class="ur-text">کسی مخصوص کام کے لیے بنا program (browser، editor وغیرہ)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="font-bold text-2xl text-slate mb-5 flex items-center gap-3 flex-row-reverse ur-text"><span class="text-2xl">🧠</span> Kernel کے چار اہم کام</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+          <div class="pro-card rounded-2xl p-5 text-right">
+            <h4 class="font-bold text-slate mb-2 flex items-center gap-2 flex-row-reverse ur-text">🧠 Memory Management</h4>
+            <p class="text-slate-mid text-sm leading-relaxed ur-text">Kernel فیصلہ کرتا ہے کہ کون سا program computer کی RAM (وہ جگہ جہاں چل رہی چیزیں رہتی ہیں) استعمال کرے گا۔ یہ یقینی بناتا ہے کہ programs ایک دوسرے کی memory نہ چرائیں — جیسے Master Chef فیصلہ کرے کہ کون سی dish کو سب سے بڑا دیگ ملے۔</p>
+          </div>
+          <div class="pro-card rounded-2xl p-5 text-right">
+            <h4 class="font-bold text-slate mb-2 flex items-center gap-2 flex-row-reverse ur-text">⚙️ Process Management</h4>
+            <p class="text-slate-mid text-sm leading-relaxed ur-text">Kernel یقینی بناتا ہے کہ ہر program کو CPU استعمال کرنے کا موقع ملے۔ جیسے ایک chef ایک ساتھ کئی dishes سنبھالے — نہ کچھ جلے، نہ کچھ رہ جائے۔</p>
+          </div>
+          <div class="pro-card rounded-2xl p-5 text-right">
+            <h4 class="font-bold text-slate mb-2 flex items-center gap-2 flex-row-reverse ur-text">🔌 Device Drivers</h4>
+            <p class="text-slate-mid text-sm leading-relaxed ur-text">Kernel hardware کے لیے universal ترجمان کا کام کرتا ہے۔ وہ آپ کی screen، keyboard، printer سب سے بات کرنا جانتا ہے — تاکہ آپ کے programs کو ہر brand کی الگ زبان نہ سیکھنی پڑے۔</p>
+          </div>
+          <div class="pro-card rounded-2xl p-5 text-right">
+            <h4 class="font-bold text-slate mb-2 flex items-center gap-2 flex-row-reverse ur-text">🛡️ System Security</h4>
+            <p class="text-slate-mid text-sm leading-relaxed ur-text">Kernel ایک چوکیدار کی طرح ہے — یہ یقینی بناتا ہے کہ ایک user دوسرے کی private files نہ دیکھ سکے اور نہ computer کو نقصان پہنچا سکے۔ ہر request کو execute کرنے سے پہلے permission rules چیک کی جاتی ہیں۔</p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl bg-slate p-6 text-white text-right">
+          <p class="text-xs uppercase tracking-widest text-amber font-bold mb-3" style="font-family:'Roboto Mono',monospace;">اہم بات</p>
+          <h4 class="font-semibold text-xl mb-3 ur-text">Shell کی ضرورت کیوں ہے؟</h4>
+          <p class="text-slate-light text-sm leading-relaxed mb-4 ur-text">Kernel بہت طاقتور ہے، لیکن وہ انسانی زبان نہیں سمجھتا۔ وہ صرف پیچیدہ electrical signals اور binary numbers جانتا ہے۔ <strong class="text-white">Bash</strong> (یعنی Bourne Again Shell) دنیا کا سب سے مشہور shell ہے — ایک waiter جو آپ کا order plain زبان میں (<code class="bg-white/10 text-white">ls -la</code>) لے کر Master Chef کی زبان میں بدل دیتا ہے۔</p>
+          <div class="terminal-window">
+            <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div><span class="text-white/40 text-xs ml-3 font-mono">جب آپ command لکھتے ہیں تو کیا ہوتا ہے</span></div>
+            <div class="terminal-body">
+              <span class="cmt"># آپ لکھتے ہیں (انسانی زبان)</span><br>
+              <span class="ok">$</span> <span class="cmd">ls</span> <span class="flag">-la</span> <span class="arg">/home/alice</span><br><br>
+              <span class="cmt"># Bash (waiter) اسے translate کر کے kernel کو بھیجتا ہے</span><br>
+              <span class="cmt"># Kernel file system پڑھتا ہے → data واپس کرتا ہے</span><br>
+              <span class="cmt"># Bash نتیجہ format کر کے آپ کی screen پر دکھاتا ہے</span><br><br>
+              <span class="ok">drwxr-xr-x  alice  alice  4096  Jan 01  Documents</span><br>
+              <span class="ok">-rw-r--r--  alice  alice   512  Jan 01  notes.txt</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab-architecture -->
+
+
+    <!-- ══ TAB 3: FILE SYSTEM ══ -->
+    <div id="tab-filesystem" class="tab-panel">
+
+      <div class="analogy-card rounded-2xl p-6 md:p-8 mb-8">
+        <div class="flex items-start gap-4 flex-row-reverse">
+          <div class="text-4xl flex-shrink-0">🌳</div>
+          <div class="text-right">
+            <p class="text-[10px] uppercase tracking-widest text-amber font-bold mb-1" style="font-family:'Roboto Mono',monospace;">آسان وضاحت</p>
+            <h2 class="font-bold text-2xl text-slate mb-3 ur-text">ایک بڑا گھر جس کے کمروں کے نام ہیں</h2>
+            <p class="text-slate-mid leading-relaxed mb-3 ur-text">Windows میں drives کو حروف ملتے ہیں جیسے <code>C:</code> یا <code>D:</code>، لیکن Linux میں <strong>سب کچھ</strong> ایک ڈھانچے میں ہوتا ہے جسے <strong>root</strong> کہتے ہیں — یعنی ایک آگے کی slash <code>/</code>۔ ہر file، program، حتیٰ کہ hardware بھی اسی ایک درخت کی شاخ ہے جو <code>/</code> سے شروع ہوتی ہے۔</p>
+            <p class="text-slate-mid leading-relaxed ur-text">Computer کو ایک بڑا گھر سمجھیں۔ File system وہ طریقہ ہے جس سے کمرے اور الماریاں ترتیب دی گئی ہیں۔ ہر کمرے کا ایک مقصد ہے، اور ہر چیز کا ایک <strong>path</strong> ہے — ان کمروں کی فہرست جن سے گزر کر آپ وہاں پہنچتے ہیں۔</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-10">
+        <h2 class="font-bold text-2xl text-slate mb-5 flex items-center gap-3 flex-row-reverse ur-text"><span class="text-2xl">🏠</span> Linux گھر کے اہم کمرے</h2>
+
+        <div class="terminal-window mb-6">
+          <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div><span class="text-white/40 text-xs ml-3 font-mono">/ — سب کا آغاز</span></div>
+          <div class="terminal-body">
+            <span class="ok">/</span>  <span class="cmt">← پورے گھر کا مرکزی دروازہ</span><br>
+            <span class="ok">├──</span> <span class="cmd">bin/</span>    <span class="cmt">← ضروری اوزاروں کی دراز (ls, cp, mv...)</span><br>
+            <span class="ok">├──</span> <span class="cmd">sbin/</span>   <span class="cmt">← تہہ خانہ — مالک کے بھاری اوزار</span><br>
+            <span class="ok">├──</span> <span class="cmd">etc/</span>    <span class="cmt">← قاعدوں کی کتاب — ہر program کی settings</span><br>
+            <span class="ok">├──</span> <span class="cmd">home/</span>   <span class="cmt">← بیڈروم — ہر عام user کا الگ فولڈر</span><br>
+            <span class="ok">│   └──</span> <span class="path">alice/</span>  <span class="cmt">← Alice کا ذاتی کمرہ</span><br>
+            <span class="ok">├──</span> <span class="cmd">root/</span>   <span class="cmt">← مالک کا private suite (صرف superuser)</span><br>
+            <span class="ok">├──</span> <span class="cmd">var/</span>    <span class="cmt">← گھر کی log book (logs، mail queues)</span><br>
+            <span class="ok">├──</span> <span class="cmd">tmp/</span>    <span class="cmt">← ردی کاغذ (reboot پر صاف ہو جاتا ہے)</span><br>
+            <span class="ok">├──</span> <span class="cmd">dev/</span>    <span class="cmt">← Hardware کی الماری (keyboard، mouse بھی files ہیں)</span><br>
+            <span class="ok">├──</span> <span class="cmd">proc/</span>   <span class="cmt">← گھر کے sensor — live kernel data (virtual)</span><br>
+            <span class="ok">└──</span> <span class="cmd">sys/</span>    <span class="cmt">← مزید sensor — hardware کی حالت (virtual)</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+
+          <div class="fs-node rounded-xl bg-white border border-slate/10 p-4 flex items-start gap-3 flex-row-reverse">
+            <code class="text-amber text-sm flex-shrink-0 mt-0.5">/bin</code>
+            <div class="text-right">
+              <p class="font-bold text-slate text-sm mb-0.5 ur-text">ضروری اوزاروں کی دراز</p>
+              <p class="text-slate-mid text-xs leading-relaxed ur-text">بنیادی executable tools جن کی ہر user کو ضرورت ہے۔ commands جیسے <code>ls</code>, <code>cp</code>, <code>mv</code>, <code>cat</code>۔ اگر یہ خراب ہوں تو سارا گھر بیکار ہو جائے۔</p>
+            </div>
+          </div>
+
+          <div class="fs-node rounded-xl bg-white border border-slate/10 p-4 flex items-start gap-3 flex-row-reverse">
+            <code class="text-amber text-sm flex-shrink-0 mt-0.5">/sbin</code>
+            <div class="text-right">
+              <p class="font-bold text-slate text-sm mb-0.5 ur-text">تہہ خانہ</p>
+              <p class="text-slate-mid text-xs leading-relaxed ur-text">بڑی مرمت کے system binaries۔ صرف root (مالک) user کو یہاں آنا چاہیے — جیسے boiler یا fuse box۔ عام users کا یہاں کوئی کام نہیں۔</p>
+            </div>
+          </div>
+
+          <div class="fs-node rounded-xl bg-white border border-slate/10 p-4 flex items-start gap-3 flex-row-reverse">
+            <code class="text-amber text-sm flex-shrink-0 mt-0.5">/etc</code>
+            <div class="text-right">
+              <p class="font-bold text-slate text-sm mb-0.5 ur-text">قاعدوں کی کتاب</p>
+              <p class="text-slate-mid text-xs leading-relaxed ur-text">ہر installed program کی configuration files۔ جیسے دیوار پر لگا manual جو chefs کو بتاتا ہے کہ oven کا درجہ حرارت کیا رکھنا ہے۔ یہاں ایک file بدلو اور پورے program کا رویہ بدل جائے گا۔</p>
+            </div>
+          </div>
+
+          <div class="fs-node rounded-xl bg-white border border-slate/10 p-4 flex items-start gap-3 flex-row-reverse">
+            <code class="text-amber text-sm flex-shrink-0 mt-0.5">/home</code>
+            <div class="text-right">
+              <p class="font-bold text-slate text-sm mb-0.5 ur-text">بیڈروم</p>
+              <p class="text-slate-mid text-xs leading-relaxed ur-text">ہر عام user کا ذاتی فولڈر۔ <code>/home/alice</code>, <code>/home/bob</code>۔ صرف اسی کمرے کا مالک اندر جا سکتا ہے۔ آپ کی Documents، Pictures اور config files یہیں رہتی ہیں۔</p>
+            </div>
+          </div>
+
+          <div class="fs-node rounded-xl bg-white border border-slate/10 p-4 flex items-start gap-3 flex-row-reverse">
+            <code class="text-amber text-sm flex-shrink-0 mt-0.5">/root</code>
+            <div class="text-right">
+              <p class="font-bold text-slate text-sm mb-0.5 ur-text">مالک کا Private Suite</p>
+              <p class="text-slate-mid text-xs leading-relaxed ur-text">Superuser کا home folder — عام بیڈرومز سے بالکل الگ رکھا گیا ہے۔ System کا سب سے طاقتور account یہاں رہتا ہے۔</p>
+            </div>
+          </div>
+
+          <div class="fs-node rounded-xl bg-white border border-slate/10 p-4 flex items-start gap-3 flex-row-reverse">
+            <code class="text-amber text-sm flex-shrink-0 mt-0.5">/var</code>
+            <div class="text-right">
+              <p class="font-bold text-slate text-sm mb-0.5 ur-text">گھر کی Log Book</p>
+              <p class="text-slate-mid text-xs leading-relaxed ur-text">بدلتی رہنے والی files: system logs، mail queues، databases۔ جیسے وہ log book جو ریکارڈ رکھے کہ ڈاک کب آئی اور کون سا bulb جلا۔</p>
+            </div>
+          </div>
+
+          <div class="fs-node rounded-xl bg-white border border-slate/10 p-4 flex items-start gap-3 flex-row-reverse">
+            <code class="text-amber text-sm flex-shrink-0 mt-0.5">/tmp</code>
+            <div class="text-right">
+              <p class="font-bold text-slate text-sm mb-0.5 ur-text">ردی کاغذ کا ڈھیر</p>
+              <p class="text-slate-mid text-xs leading-relaxed ur-text">وہ temporary files جو programs کام کرتے وقت بناتے ہیں۔ System ہر reboot پر یہ جگہ صاف کر دیتا ہے — جیسے حساب کر کے notepad پھینک دینا۔</p>
+            </div>
+          </div>
+
+          <div class="fs-node rounded-xl bg-white border border-slate/10 p-4 flex items-start gap-3 flex-row-reverse">
+            <code class="text-amber text-sm flex-shrink-0 mt-0.5">/dev</code>
+            <div class="text-right">
+              <p class="font-bold text-slate text-sm mb-0.5 ur-text">Hardware کی الماری</p>
+              <p class="text-slate-mid text-xs leading-relaxed ur-text">Linux میں ہر hardware device ایک file ہے۔ آپ کا keyboard ہے <code>/dev/input/keyboard</code>۔ Hard drive ہے <code>/dev/sda</code>۔ سب کچھ ایک file ہے — Linux کا بنیادی اصول۔</p>
+            </div>
+          </div>
+
+          <div class="fs-node rounded-xl bg-white border border-slate/10 p-4 flex items-start gap-3 flex-row-reverse md:col-span-2">
+            <code class="text-amber text-sm flex-shrink-0 mt-0.5">/proc &amp; /sys</code>
+            <div class="text-right">
+              <p class="font-bold text-slate text-sm mb-0.5 ur-text">گھر کے Sensor — Virtual کمرے</p>
+              <p class="text-slate-mid text-xs leading-relaxed ur-text">یہ directories hard drive پر physically موجود نہیں ہیں۔ انہیں kernel live بناتا ہے اور یہ real-time معلومات دیتی ہیں — CPU کا استعمال، memory، چل رہے processes۔ جیسے دیوار پر لگے sensor جو ابھی کے درجہ حرارت اور نمی دکھائیں۔</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /tab-filesystem -->
+
+
+    <!-- ══ TAB 4: NAVIGATION COMMANDS ══ -->
+    <div id="tab-navigation" class="tab-panel">
+
+      <div class="analogy-card rounded-2xl p-6 md:p-8 mb-8">
+        <div class="flex items-start gap-4 flex-row-reverse">
+          <div class="text-4xl flex-shrink-0">🧭</div>
+          <div class="text-right">
+            <p class="text-[10px] uppercase tracking-widest text-amber font-bold mb-1" style="font-family:'Roboto Mono',monospace;">آسان وضاحت</p>
+            <h2 class="font-bold text-2xl text-slate mb-3 ur-text">گھر میں آنکھیں کھولنا</h2>
+            <p class="text-slate-mid leading-relaxed ur-text">ہر Bash command تین حصوں پر چلتی ہے: <strong>Command Name</strong> (کیا کرنا ہے)، <strong>Options/Flags</strong> (کیسے کرنا ہے — dash کے ساتھ)، اور <strong>Argument</strong> (کس پر کرنا ہے)۔ یہ تین navigation commands سیکھ لیں اور Linux کے file system میں کچھ بھی تلاش کر سکتے ہیں۔</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ls -->
+      <div class="mb-8">
+        <h2 class="font-bold text-2xl text-slate mb-4 flex items-center gap-3 flex-row-reverse"><span class="text-2xl">👁️</span> <code>ls</code> <span class="ur-text">— آنکھیں کھولیں</span></h2>
+        <p class="text-slate-mid leading-relaxed mb-5 ur-text text-right"><code>ls</code> command آپ کو بتاتی ہے کہ کسی folder کے اندر کیا ہے۔ جیسے آنکھیں کھول کر کمرے میں دیکھنا۔ یہ وہ پہلی command ہے جو ہر Linux user سیکھتا ہے۔</p>
+        <div class="rounded-2xl overflow-hidden border border-slate/10 shadow-sm mb-5">
+          <table class="oc-table">
+            <thead><tr><th>Option</th><th>نام</th><th>کیا کرتی ہے</th></tr></thead>
+            <tbody>
+              <tr><td><code>-a</code></td><td class="ur-text">سب</td><td class="ur-text">چھپی ہوئی چیزیں بھی دکھائے (dot سے شروع ہونے والی files) — جیسے counter کے نیچے کی خفیہ دراز</td></tr>
+              <tr><td><code>-l</code></td><td class="ur-text">تفصیل</td><td class="ur-text">پوری تفصیل دکھائے: permissions، مالک، size، اور آخری بار بدلنے کا وقت</td></tr>
+              <tr><td><code>-h</code></td><td class="ur-text">سمجھنے کے قابل</td><td class="ur-text">bytes کو پڑھنے کے قابل بنائے: KB، MB، GB</td></tr>
+              <tr><td><code>-R</code></td><td class="ur-text">Recursive</td><td class="ur-text">ہر folder کے اندر جھانکے، اور ان کے اندر بھی — مکمل تلاش</td></tr>
+              <tr><td><code>-t</code></td><td class="ur-text">وقت</td><td class="ur-text">چیزوں کو آخری بار بدلنے کے وقت کے حساب سے ترتیب دے — نیا پہلے</td></tr>
+              <tr><td><code>-S</code></td><td class="ur-text">Size</td><td class="ur-text">چیزوں کو file size کے حساب سے ترتیب دے — سب سے بڑی پہلے</td></tr>
+              <tr><td><code>-r</code></td><td class="ur-text">الٹا</td><td class="ur-text">کسی بھی ترتیب کو الٹا کر دے</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="terminal-window">
+          <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div><span class="text-white/40 text-xs ml-3 font-mono">ls examples</span></div>
+          <div class="terminal-body">
+            <span class="cmt"># بنیادی — اس folder میں کیا ہے؟</span><br>
+            <span class="ok">$</span> <span class="cmd">ls</span><br>
+            <span class="arg">Documents  Downloads  notes.txt  script.sh</span><br><br>
+            <span class="cmt"># Professional combo: تفصیل + سمجھنے والا + چھپی files</span><br>
+            <span class="ok">$</span> <span class="cmd">ls</span> <span class="flag">-lah</span><br>
+            <span class="perm">drwxr-xr-x</span>  alice  alice  <span class="arg">4.0K</span>  Jan 10  <span class="cmd">Documents</span><br>
+            <span class="perm">-rw-r--r--</span>  alice  alice  <span class="arg"> 512</span>  Jan 10  notes.txt<br>
+            <span class="path">-rw-------</span>  alice  alice  <span class="arg"> 256</span>  Jan 09  .bash_history <span class="cmt">← چھپی ہوئی</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- cd -->
+      <div class="mb-8">
+        <h2 class="font-bold text-2xl text-slate mb-4 flex items-center gap-3 flex-row-reverse"><span class="text-2xl">🚶</span> <code>cd</code> <span class="ur-text">— دروازوں سے گزرنا</span></h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+          <div class="pro-card rounded-2xl p-5 text-right">
+            <h4 class="font-bold text-slate mb-3 text-sm ur-text">cd کے ضروری shortcuts</h4>
+            <ul class="space-y-2 text-slate-mid text-sm">
+              <li class="flex items-start gap-2 flex-row-reverse"><code class="text-amber flex-shrink-0">cd Documents</code><span class="ur-text">Documents کمرے میں جائیں</span></li>
+              <li class="flex items-start gap-2 flex-row-reverse"><code class="text-amber flex-shrink-0">cd ..</code><span class="ur-text">ایک level اوپر جائیں — parent کمرہ</span></li>
+              <li class="flex items-start gap-2 flex-row-reverse"><code class="text-amber flex-shrink-0">cd ~</code><span class="ur-text">فوری طور پر اپنے home bedroom میں جائیں</span></li>
+              <li class="flex items-start gap-2 flex-row-reverse"><code class="text-amber flex-shrink-0">cd -</code><span class="ur-text">پچھلے کمرے میں واپس جائیں (back button)</span></li>
+              <li class="flex items-start gap-2 flex-row-reverse"><code class="text-amber flex-shrink-0">cd /</code><span class="ur-text">مرکزی دروازے تک پہنچیں — سب کی جڑ</span></li>
+            </ul>
+          </div>
+          <div class="pro-card rounded-2xl p-5 text-right">
+            <h4 class="font-bold text-slate mb-3 text-sm ur-text">Absolute بمقابلہ Relative Paths</h4>
+            <div class="terminal-window">
+              <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div></div>
+              <div class="terminal-body" style="font-size:0.72rem;">
+                <span class="cmt"># Absolute — / سے شروع ہوتا ہے</span><br>
+                <span class="ok">$</span> <span class="cmd">cd</span> <span class="path">/home/alice/Documents</span><br><br>
+                <span class="cmt"># Relative — جہاں آپ ابھی ہیں وہاں سے</span><br>
+                <span class="ok">$</span> <span class="cmd">cd</span> <span class="arg">Documents/Projects</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- pwd -->
+      <div class="mb-6">
+        <h2 class="font-bold text-2xl text-slate mb-4 flex items-center gap-3 flex-row-reverse"><span class="text-2xl">📍</span> <code>pwd</code> <span class="ur-text">— میں کہاں ہوں؟</span></h2>
+        <div class="pro-card rounded-2xl p-5 text-right">
+          <p class="text-slate-mid text-sm leading-relaxed mb-4 ur-text">جب آپ nested folders میں کہیں کھو جائیں، <code>pwd</code> آپ کو بتائے گا کہ آپ کہاں ہیں — مرکزی دروازے <code>/</code> سے آپ کے موجودہ کمرے تک پورا راستہ۔ Scripts چلاتے وقت خاص طور پر ضروری ہے۔</p>
+          <div class="terminal-window">
+            <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div><span class="text-white/40 text-xs ml-3 font-mono">pwd</span></div>
+            <div class="terminal-body">
+              <span class="ok">$</span> <span class="cmd">pwd</span><br>
+              <span class="path">/home/alice/Documents/Projects/website</span><br><br>
+              <span class="cmt"># آپ ابھی مرکزی دروازے سے پانچ کمرے اندر ہیں</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab-navigation -->
+
+
+    <!-- ══ TAB 5: ACTION COMMANDS ══ -->
+    <div id="tab-actions" class="tab-panel">
+
+      <div class="analogy-card rounded-2xl p-6 md:p-8 mb-8">
+        <div class="flex items-start gap-4 flex-row-reverse">
+          <div class="text-4xl flex-shrink-0">✂️</div>
+          <div class="text-right">
+            <p class="text-[10px] uppercase tracking-widest text-amber font-bold mb-1" style="font-family:'Roboto Mono',monospace;">آسان وضاحت</p>
+            <h2 class="font-bold text-2xl text-slate mb-3 ur-text">بنانا، منتقل کرنا، اور مٹانا</h2>
+            <p class="text-slate-mid leading-relaxed ur-text">Navigation سے آپ دیکھ سکتے ہیں۔ Action commands سے آپ <em>چیزیں بدل سکتے ہیں</em> — نئے کمرے بنائیں، چیزوں کی copies بنائیں، ایک جگہ سے دوسری جگہ منتقل کریں، اور مٹائیں۔ سب سے اہم اصول: <strong>Linux server پر کوئی Trash Can نہیں ہوتا۔ مٹا دیا مطلب ہمیشہ کے لیے گیا۔</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-6 mb-6">
+
+        <div class="pro-card rounded-2xl p-6 text-right">
+          <h3 class="font-bold text-xl text-slate mb-2 flex items-center gap-2 flex-row-reverse">🏗️ <code>mkdir</code> <span class="ur-text">— نیا کمرہ بنائیں</span></h3>
+          <p class="text-slate-mid text-sm leading-relaxed mb-4 ur-text">ایک نیا folder بناتا ہے۔ <code>-p</code> flag ایک ساتھ پوری nested rooms کی gallery بنا دیتا ہے — ایک ایک کر کے بنانے کی ضرورت نہیں۔</p>
+          <div class="terminal-window">
+            <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div></div>
+            <div class="terminal-body">
+              <span class="ok">$</span> <span class="cmd">mkdir</span> <span class="arg">Reports</span>                     <span class="cmt">← ایک کمرہ</span><br>
+              <span class="ok">$</span> <span class="cmd">mkdir</span> <span class="flag">-p</span> <span class="arg">Projects/2026/January</span>  <span class="cmt">← ایک ساتھ پوری gallery</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pro-card rounded-2xl p-6 text-right">
+          <h3 class="font-bold text-xl text-slate mb-2 flex items-center gap-2 flex-row-reverse">📄 <code>touch</code> <span class="ur-text">— خالی file بنائیں</span></h3>
+          <p class="text-slate-mid text-sm leading-relaxed mb-4 ur-text">ایک نئی، خالی file بناتا ہے — جیسے میز پر خالی کاغذ رکھنا۔ File کا مواد بدلے بغیر اس کا "آخری تبدیلی کا وقت" بھی update کر سکتا ہے۔</p>
+          <div class="terminal-window">
+            <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div></div>
+            <div class="terminal-body">
+              <span class="ok">$</span> <span class="cmd">touch</span> <span class="arg">notes.txt</span>       <span class="cmt">← نئی خالی file</span><br>
+              <span class="ok">$</span> <span class="cmd">touch</span> <span class="arg">notes.txt</span>       <span class="cmt">← timestamp update کرے (file وہی رہے)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pro-card rounded-2xl p-6 text-right">
+          <h3 class="font-bold text-xl text-slate mb-2 flex items-center gap-2 flex-row-reverse">📋 <code>cp</code> <span class="ur-text">— Copy کریں</span></h3>
+          <p class="text-slate-mid text-sm leading-relaxed mb-4 ur-text">ایک نقل بناتا ہے — جیسے photo کو copy machine میں ڈالنا۔ اصل اپنی جگہ رہتی ہے؛ نئی copy مقصد کی جگہ ظاہر ہوتی ہے۔</p>
+          <div class="rounded-xl overflow-hidden border border-slate/10 mb-4">
+            <table class="oc-table">
+              <thead><tr><th>Option</th><th>نام</th><th>استعمال</th></tr></thead>
+              <tbody>
+                <tr><td><code>-r</code></td><td class="ur-text">Recursive</td><td class="ur-text">پورا folder اور اس کی تمام چیزیں copy کرے — directories کے لیے ضروری</td></tr>
+                <tr><td><code>-p</code></td><td class="ur-text">Preserve</td><td class="ur-text">اصل مالک، timestamps اور permissions copy میں بھی رکھے</td></tr>
+                <tr><td><code>-u</code></td><td class="ur-text">Update</td><td class="ur-text">صرف تب copy کرے جب source زیادہ نئی ہو — smart sync</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="terminal-window">
+            <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div></div>
+            <div class="terminal-body">
+              <span class="ok">$</span> <span class="cmd">cp</span> <span class="arg">notes.txt</span> <span class="arg">backup/notes.txt</span>   <span class="cmt">← ایک file</span><br>
+              <span class="ok">$</span> <span class="cmd">cp</span> <span class="flag">-rp</span> <span class="arg">Projects/</span> <span class="arg">/backup/Projects/</span>  <span class="cmt">← پورا folder، محفوظ</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pro-card rounded-2xl p-6 text-right">
+          <h3 class="font-bold text-xl text-slate mb-2 flex items-center gap-2 flex-row-reverse">🚚 <code>mv</code> <span class="ur-text">— منتقل کریں اور نام بدلیں</span></h3>
+          <p class="text-slate-mid text-sm leading-relaxed mb-4 ur-text">Linux میں file کو منتقل کرنا اور نام بدلنا <em>ایک ہی command</em> ہے۔ آپ بس ایک چیز اٹھا کر کہیں اور رکھ رہے ہیں یا نیا نام دے رہے ہیں۔ اصل اپنی پرانی جگہ سے ختم ہو جاتی ہے۔</p>
+          <div class="terminal-window">
+            <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div></div>
+            <div class="terminal-body">
+              <span class="ok">$</span> <span class="cmd">mv</span> <span class="arg">notes.txt</span> <span class="arg">Documents/notes.txt</span>  <span class="cmt">← دوسرے کمرے میں لے جائیں</span><br>
+              <span class="ok">$</span> <span class="cmd">mv</span> <span class="arg">old_name.txt</span> <span class="arg">new_name.txt</span>     <span class="cmt">← اسی جگہ نام بدلیں</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-2xl border-2 border-red-200 bg-red-50/50 p-6 text-right">
+          <h3 class="font-bold text-xl text-slate mb-2 flex items-center gap-2 flex-row-reverse">🗑️ <code>rm</code> <span class="ur-text">— مٹائیں</span> <span class="text-red-600 text-sm font-semibold">⚠️ واپس نہیں آتا</span></h3>
+          <p class="text-slate-mid text-sm leading-relaxed mb-4 ur-text">Files ہمیشہ کے لیے مٹا دیتا ہے۔ Server پر کوئی Trash Can نہیں، کوئی Recycle Bin نہیں، کوئی Undo نہیں۔ مٹ گیا تو مٹ گیا۔ یہ وہ command ہے جو نئے users کے لیے سب سے خطرناک ہے۔</p>
+          <div class="rounded-xl overflow-hidden border border-red-200 mb-4">
+            <table class="oc-table">
+              <thead><tr><th>Option</th><th>نام</th><th>کیوں استعمال ہوتی ہے</th></tr></thead>
+              <tbody>
+                <tr><td><code>-i</code></td><td class="ur-text">Interactive</td><td class="text-green-700 font-semibold ur-text">✓ نئے users کے لیے بہتر — ہر بار مٹانے سے پہلے پوچھے "یقین ہے؟"</td></tr>
+                <tr><td><code>-r</code></td><td class="ur-text">Recursive</td><td class="ur-text">پورا folder اور اس کے اندر کی ہر چیز مٹائے</td></tr>
+                <tr><td><code>-f</code></td><td class="ur-text">Force</td><td class="text-red-600 font-semibold ur-text">⚠️ بغیر پوچھے مٹائے، protected files بھی۔ انتہائی احتیاط سے استعمال کریں</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="terminal-window">
+            <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div></div>
+            <div class="terminal-body">
+              <span class="ok">$</span> <span class="cmd">rm</span> <span class="flag">-i</span> <span class="arg">notes.txt</span>     <span class="cmt">← محفوظ: مٹانے سے پہلے پوچھتا ہے</span><br>
+              <span class="warn">rm: remove regular file 'notes.txt'? y</span><br><br>
+              <span class="ok">$</span> <span class="cmd">rm</span> <span class="flag">-rf</span> <span class="arg">Projects/</span>    <span class="cmt">← خطرناک: پورا folder خاموشی سے مٹا دیتا ہے</span><br>
+              <span class="perm">⚠️  کوئی output نہیں۔ کوئی تصدیق نہیں۔ بس گیا۔</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div><!-- /tab-actions -->
+
+
+    <!-- ══ TAB 6: READING & SEARCHING ══ -->
+    <div id="tab-reading" class="tab-panel">
+
+      <div class="analogy-card rounded-2xl p-6 md:p-8 mb-8">
+        <div class="flex items-start gap-4 flex-row-reverse">
+          <div class="text-4xl flex-shrink-0">🔍</div>
+          <div class="text-right">
+            <p class="text-[10px] uppercase tracking-widest text-amber font-bold mb-1" style="font-family:'Roboto Mono',monospace;">آسان وضاحت</p>
+            <h2 class="font-bold text-2xl text-slate mb-3 ur-text">کتابیں پڑھنا اور الفاظ تلاش کرنا</h2>
+            <p class="text-slate-mid leading-relaxed ur-text">Linux servers بہت زیادہ text پیدا کرتے ہیں: log files، config files، output data۔ آپ کو ایسے tools چاہئیں جو انہیں پڑھ سکیں اور ہزاروں lines میں سے ٹھیک وہ line نکال سکیں جو آپ ڈھونڈ رہے ہیں۔ یہ تین commands آپ کی عینک اور magnifying glass ہیں۔</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-6 mb-6">
+
+        <div class="pro-card rounded-2xl p-6 text-right">
+          <h3 class="font-bold text-xl text-slate mb-2 flex items-center gap-2 flex-row-reverse">📖 <code>cat</code> <span class="ur-text">— پوری کتاب پڑھیں</span></h3>
+          <p class="text-slate-mid text-sm leading-relaxed mb-4 ur-text">پوری file کا مواد screen پر دکھاتا ہے۔ جیسے کتاب کھول کر ہر صفحہ ایک ساتھ پڑھنا۔ چھوٹی files کے لیے بہتر ہے — بڑی files بہت تیزی سے گزر جاتی ہیں۔</p>
+          <div class="terminal-window">
+            <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div></div>
+            <div class="terminal-body">
+              <span class="ok">$</span> <span class="cmd">cat</span> <span class="arg">notes.txt</span>         <span class="cmt">← پوری file دکھائیں</span><br>
+              <span class="ok">$</span> <span class="cmd">cat</span> <span class="flag">-n</span> <span class="arg">notes.txt</span>      <span class="cmt">← line نمبروں کے ساتھ</span><br>
+              <span class="ok">$</span> <span class="cmd">cat</span> <span class="arg">file1.txt file2.txt</span>  <span class="cmt">← دو files جوڑ کر دکھائیں</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pro-card rounded-2xl p-6 text-right">
+          <h3 class="font-bold text-xl text-slate mb-2 flex items-center gap-2 flex-row-reverse">🔎 <code>grep</code> <span class="ur-text">— Magnifying Glass</span></h3>
+          <p class="text-slate-mid text-sm leading-relaxed mb-4 ur-text">کسی file یا stream میں کوئی خاص لفظ یا pattern تلاش کرتا ہے۔ جیسے ایک بڑی phone book میں magnifying glass سے کوئی نام ڈھونڈنا۔ Linux کی سب سے طاقتور اور سب سے زیادہ استعمال ہونے والی commands میں سے ایک۔</p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+            <div class="info-card bg-white rounded-xl p-3 text-center">
+              <code class="text-amber text-sm">-i</code>
+              <p class="text-slate text-xs font-bold mt-1 ur-text">Case-Insensitive</p>
+              <p class="text-slate-light text-xs mt-0.5 ur-text">"Error"، "ERROR"، "error" سب ملائے</p>
+            </div>
+            <div class="info-card bg-white rounded-xl p-3 text-center">
+              <code class="text-amber text-sm">-v</code>
+              <p class="text-slate text-xs font-bold mt-1 ur-text">الٹا Match</p>
+              <p class="text-slate-light text-xs mt-0.5 ur-text">لفظ کے علاوہ باقی سب دکھائے</p>
+            </div>
+            <div class="info-card bg-white rounded-xl p-3 text-center">
+              <code class="text-amber text-sm">-r</code>
+              <p class="text-slate text-xs font-bold mt-1 ur-text">Recursive</p>
+              <p class="text-slate-light text-xs mt-0.5 ur-text">ہر folder کی ہر file میں تلاش کرے</p>
+            </div>
+          </div>
+          <div class="terminal-window">
+            <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div></div>
+            <div class="terminal-body">
+              <span class="cmt"># log file میں "error" تلاش کریں (چھوٹے بڑے حروف نظر انداز)</span><br>
+              <span class="ok">$</span> <span class="cmd">grep</span> <span class="flag">-i</span> <span class="arg">"error"</span> <span class="path">/var/log/syslog</span><br><br>
+              <span class="cmt"># logs folder کی ہر file میں تلاش</span><br>
+              <span class="ok">$</span> <span class="cmd">grep</span> <span class="flag">-r</span> <span class="arg">"Failed login"</span> <span class="path">/var/log/</span><br><br>
+              <span class="cmt"># وہ تمام lines دکھائیں جن میں "debug" نہیں</span><br>
+              <span class="ok">$</span> <span class="cmd">grep</span> <span class="flag">-v</span> <span class="arg">"debug"</span> <span class="arg">app.log</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pro-card rounded-2xl p-6 text-right">
+          <h3 class="font-bold text-xl text-slate mb-2 flex items-center gap-2 flex-row-reverse">📰 <code>head</code> &amp; <code>tail</code> <span class="ur-text">— شروع یا آخر دیکھیں</span></h3>
+          <p class="text-slate-mid text-sm leading-relaxed mb-4 ur-text"><code>head</code> file کی پہلی ۱۰ lines دکھاتا ہے۔ <code>tail</code> آخری ۱۰ دکھاتا ہے۔ دونوں <code>-n</code> سے تعداد بدلی جا سکتی ہے۔ <code>tail -f</code> professionals کا live monitoring tool ہے — یہ file کو دیکھتا رہتا ہے اور نئی lines آتے ہی دکھاتا ہے۔</p>
+          <div class="terminal-window">
+            <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div></div>
+            <div class="terminal-body">
+              <span class="ok">$</span> <span class="cmd">head</span> <span class="flag">-n 5</span> <span class="arg">server.log</span>   <span class="cmt">← پہلی 5 lines</span><br>
+              <span class="ok">$</span> <span class="cmd">tail</span> <span class="flag">-n 20</span> <span class="arg">server.log</span>  <span class="cmt">← آخری 20 lines</span><br><br>
+              <span class="cmt"># Professional live-monitoring trick:</span><br>
+              <span class="ok">$</span> <span class="cmd">tail</span> <span class="flag">-f</span> <span class="path">/var/log/syslog</span>   <span class="cmt">← live news ticker</span><br>
+              <span class="ok">Jan 10 14:32:01 server sshd: Accepted login for alice</span><br>
+              <span class="ok">Jan 10 14:32:15 server cron: Running daily backup...</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div><!-- /tab-reading -->
+
+
+    <!-- ══ TAB 7: PERMISSIONS ══ -->
+    <div id="tab-permissions" class="tab-panel">
+
+      <div class="analogy-card rounded-2xl p-6 md:p-8 mb-8">
+        <div class="flex items-start gap-4 flex-row-reverse">
+          <div class="text-4xl flex-shrink-0">🔐</div>
+          <div class="text-right">
+            <p class="text-[10px] uppercase tracking-widest text-amber font-bold mb-1" style="font-family:'Roboto Mono',monospace;">آسان وضاحت</p>
+            <h2 class="font-bold text-2xl text-slate mb-3 ur-text">تین چابیاں اور تین گروہ</h2>
+            <p class="text-slate-mid leading-relaxed ur-text">ایک ایسے گھر میں جہاں کئی لوگ رہتے ہوں، ہر file کے تین قسم کی <strong>چابیاں</strong> ہیں — Read (پڑھنا)، Write (لکھنا)، اور Execute (چلانا) — اور تین <strong>گروہ</strong> جن کے پاس یہ چابیاں ہو سکتی ہیں: Owner (آپ)، Group (آپ کی team)، اور Others (باقی سب)۔ یہ combination طے کرتا ہے کہ کون کیا کر سکتا ہے۔</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-10">
+        <h2 class="font-bold text-2xl text-slate mb-5 flex items-center gap-3 flex-row-reverse ur-text"><span class="text-2xl">🗝️</span> تین چابیاں</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+          <div class="info-card bg-white rounded-2xl p-6 text-center">
+            <div class="w-14 h-14 rounded-xl bg-green-50 border border-green-200 flex items-center justify-center text-2xl mx-auto mb-3">👁️</div>
+            <p class="tier-badge text-green-700 mb-1">r = 4</p>
+            <h3 class="font-bold text-lg text-slate mb-2 ur-text">Read — پڑھنا</h3>
+            <p class="text-slate-mid text-sm leading-relaxed ur-text">file دیکھنے یا folder کا مواد جاننے کی اجازت۔ یہ چابی نہیں تو file آپ کو نظر ہی نہیں آئے گی۔</p>
+          </div>
+          <div class="info-card bg-white rounded-2xl p-6 text-center">
+            <div class="w-14 h-14 rounded-xl bg-red-50 border border-red-200 flex items-center justify-center text-2xl mx-auto mb-3">✏️</div>
+            <p class="tier-badge text-red-600 mb-1">w = 2</p>
+            <h3 class="font-bold text-lg text-slate mb-2 ur-text">Write — لکھنا</h3>
+            <p class="text-slate-mid text-sm leading-relaxed ur-text">file بدلنے، مٹانے یا folder میں نئی چیزیں شامل کرنے کی اجازت۔ یہ چابی حفاظت سے دیں — سوچ کر کسی کو دیں۔</p>
+          </div>
+          <div class="info-card bg-white rounded-2xl p-6 text-center">
+            <div class="w-14 h-14 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-2xl mx-auto mb-3">▶️</div>
+            <p class="tier-badge text-blue-700 mb-1">x = 1</p>
+            <h3 class="font-bold text-lg text-slate mb-2 ur-text">Execute — چلانا</h3>
+            <p class="text-slate-mid text-sm leading-relaxed ur-text">file کو program کی طرح چلانے یا folder میں <code>cd</code> سے داخل ہونے کی اجازت۔ یہ چابی نہیں تو script وہیں بیکار پڑی رہے گی۔</p>
+          </div>
+        </div>
+
+        <h2 class="font-bold text-2xl text-slate mb-4 flex items-center gap-3 flex-row-reverse ur-text"><span class="text-2xl">🏷️</span> Permission Label پڑھنا</h2>
+        <div class="pro-card rounded-2xl p-6 mb-6 text-right">
+          <p class="text-slate-mid text-sm leading-relaxed mb-4 ur-text">جب آپ <code>ls -l</code> چلاتے ہیں تو ایک string نظر آتی ہے جیسے <code>-rwxr-xr--</code>۔ یہ Lock Label ہے، چار حصوں میں:</p>
+          <div class="terminal-window mb-4">
+            <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div></div>
+            <div class="terminal-body" style="font-size:0.8rem; letter-spacing:0.05em;">
+              <span class="perm">-</span><span class="pbit-r">r</span><span class="pbit-w">w</span><span class="pbit-x">x</span>  <span class="pbit-r">r</span><span class="pbit-no">-</span><span class="pbit-x">x</span>  <span class="pbit-r">r</span><span class="pbit-no">-</span><span class="pbit-no">-</span>  alice  staff  4096  Jan 10  script.sh<br><br>
+              <span class="perm">│</span>  <span class="ok">└─────┘</span>  <span class="warn">└─────┘</span>  <span class="flag">└─────┘</span><br>
+              <span class="perm">│</span>  <span class="ok">OWNER</span>    <span class="warn">GROUP</span>    <span class="flag">OTHERS</span><br>
+              <span class="perm">└── file type (- = file, d = directory)</span>
+            </div>
+          </div>
+        </div>
+
+        <h2 class="font-bold text-2xl text-slate mb-4 flex items-center gap-3 flex-row-reverse ur-text"><span class="text-2xl">🔢</span> نمبروں کا نظام</h2>
+        <div class="rounded-2xl overflow-hidden border border-slate/10 shadow-sm mb-6">
+          <table class="oc-table">
+            <thead><tr><th>نمبر</th><th>علامت</th><th>چابیاں</th><th>مطلب</th></tr></thead>
+            <tbody>
+              <tr><td class="font-mono font-bold text-amber">7</td><td><span class="pbit-r">r</span><span class="pbit-w">w</span><span class="pbit-x">x</span></td><td>4+2+1</td><td class="ur-text">پڑھ، لکھ، اور چلا سکتا ہے — مکمل اختیار</td></tr>
+              <tr><td class="font-mono font-bold text-amber">6</td><td><span class="pbit-r">r</span><span class="pbit-w">w</span><span class="pbit-no">-</span></td><td>4+2</td><td class="ur-text">پڑھ اور بدل سکتا ہے، لیکن program نہیں چلا سکتا</td></tr>
+              <tr><td class="font-mono font-bold text-amber">5</td><td><span class="pbit-r">r</span><span class="pbit-no">-</span><span class="pbit-x">x</span></td><td>4+1</td><td class="ur-text">پڑھ اور چلا سکتا ہے، لیکن بدل نہیں سکتا</td></tr>
+              <tr><td class="font-mono font-bold text-amber">4</td><td><span class="pbit-r">r</span><span class="pbit-no">-</span><span class="pbit-no">-</span></td><td>4</td><td class="ur-text">صرف دیکھ سکتا ہے — read-only</td></tr>
+              <tr><td class="font-mono font-bold text-amber">0</td><td><span class="pbit-no">-</span><span class="pbit-no">-</span><span class="pbit-no">-</span></td><td>0</td><td class="ur-text">کچھ نہیں کر سکتا — مکمل بند</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="terminal-window">
+          <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div><span class="text-white/40 text-xs ml-3 font-mono">chmod examples</span></div>
+          <div class="terminal-body">
+            <span class="cmt"># owner کو سب چابیاں (7)، باقیوں کو پڑھنے+چلانے کی (5)</span><br>
+            <span class="ok">$</span> <span class="cmd">chmod</span> <span class="arg">755</span> <span class="path">script.sh</span><br><br>
+            <span class="cmt"># ذاتی file: صرف owner پڑھ/لکھ سکے (6)، کوئی اور نہیں (0)</span><br>
+            <span class="ok">$</span> <span class="cmd">chmod</span> <span class="arg">600</span> <span class="path">~/.ssh/id_rsa</span><br><br>
+            <span class="cmt"># file کا مالک بدلیں</span><br>
+            <span class="ok">$</span> <span class="cmd">chown</span> <span class="arg">alice:developers</span> <span class="path">project.txt</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab-permissions -->
+
+
+    <!-- ══ TAB 8: PIPES & REDIRECTION ══ -->
+    <div id="tab-pipes" class="tab-panel">
+
+      <div class="analogy-card rounded-2xl p-6 md:p-8 mb-8">
+        <div class="flex items-start gap-4 flex-row-reverse">
+          <div class="text-4xl flex-shrink-0">🏭</div>
+          <div class="text-right">
+            <p class="text-[10px] uppercase tracking-widest text-amber font-bold mb-1" style="font-family:'Roboto Mono',monospace;">آسان وضاحت</p>
+            <h2 class="font-bold text-2xl text-slate mb-3 ur-text">فیکٹری کی Assembly Line</h2>
+            <p class="text-slate-mid leading-relaxed ur-text">Linux کا ایک سب سے طاقتور خیال یہ ہے کہ tools کو آپس میں جوڑ سکتے ہیں۔ سوچیں ایک فیکٹری: پہلا کارکن کھلونا بناتا ہے، دوسرا رنگ کرتا ہے، تیسرا ڈبے میں رکھتا ہے۔ <strong>Pipe</strong> <code>|</code> وہ conveyor belt ہے۔ ہر command کا output اگلی command کا input بن جاتا ہے — آسان tools سے طاقتور chains۔</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-10">
+        <h2 class="font-bold text-2xl text-slate mb-5 flex items-center gap-3 flex-row-reverse ur-text"><span class="text-2xl">🚰</span> تین Standard Streams</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+          <div class="info-card bg-white rounded-2xl p-5 text-center">
+            <div class="text-3xl mb-2">⌨️</div>
+            <p class="tier-badge text-slate-mid mb-1">stdin (0)</p>
+            <h4 class="font-bold text-slate mb-1 ur-text">Standard Input</h4>
+            <p class="text-slate-mid text-xs leading-relaxed ur-text">وہ نل جہاں سے اجزاء آتے ہیں۔ عام طور پر keyboard — لیکن file یا کسی اور command کے output سے بھی آ سکتا ہے۔</p>
+          </div>
+          <div class="info-card bg-white rounded-2xl p-5 text-center">
+            <div class="text-3xl mb-2">🖥️</div>
+            <p class="tier-badge text-amber mb-1">stdout (1)</p>
+            <h4 class="font-bold text-slate mb-1 ur-text">Standard Output</h4>
+            <p class="text-slate-mid text-xs leading-relaxed ur-text">وہ نل جہاں سے تیار چیز نکلتی ہے۔ عام طور پر screen — لیکن file میں بھی بھیجی جا سکتی ہے یا اگلی command کو دی جا سکتی ہے۔</p>
+          </div>
+          <div class="info-card bg-white rounded-2xl p-5 text-center">
+            <div class="text-3xl mb-2">🚨</div>
+            <p class="tier-badge text-red-600 mb-1">stderr (2)</p>
+            <h4 class="font-bold text-slate mb-1 ur-text">Standard Error</h4>
+            <p class="text-slate-mid text-xs leading-relaxed ur-text">ایک الگ "اوپس!" نل۔ غلطیوں کے پیغام یہاں آتے ہیں تاکہ انہیں کامیاب output سے الگ محفوظ کیا جا سکے۔</p>
+          </div>
+        </div>
+
+        <h2 class="font-bold text-2xl text-slate mb-5 flex items-center gap-3 flex-row-reverse ur-text"><span class="text-2xl">🔗</span> Connector Symbols</h2>
+        <div class="space-y-4 mb-6">
+          <div class="pro-card rounded-2xl p-5 flex items-start gap-4 flex-row-reverse">
+            <code class="text-amber font-bold text-xl flex-shrink-0 mt-0.5">|</code>
+            <div class="text-right">
+              <h4 class="font-bold text-slate mb-1 ur-text">Pipe — Conveyor Belt</h4>
+              <p class="text-slate-mid text-sm leading-relaxed ur-text">ایک command کا output براہ راست دوسری command کے input میں ڈالتا ہے۔ Commands کو طاقتور chains میں جوڑتا ہے۔ <br/><code>ls | grep "homework"</code> — files کی فہرست بنائیں، پھر صرف "homework" والی نکالیں۔</p>
+            </div>
+          </div>
+          <div class="pro-card rounded-2xl p-5 flex items-start gap-4 flex-row-reverse">
+            <code class="text-amber font-bold text-xl flex-shrink-0 mt-0.5">&gt;</code>
+            <div class="text-right">
+              <h4 class="font-bold text-slate mb-1 ur-text">Output Redirect — پرانا مٹا کر لکھنا</h4>
+              <p class="text-slate-mid text-sm leading-relaxed ur-text">Output کو screen کی بجائے file میں ڈالتا ہے۔ پہلے سے موجود مواد <strong>مٹا کر</strong> لکھتا ہے۔ جیسے notepad کو مکمل صاف کر کے نیا لکھنا۔ <br/><code>ls -la &gt; file_list.txt</code></p>
+            </div>
+          </div>
+          <div class="pro-card rounded-2xl p-5 flex items-start gap-4 flex-row-reverse">
+            <code class="text-amber font-bold text-xl flex-shrink-0 mt-0.5">&gt;&gt;</code>
+            <div class="text-right">
+              <h4 class="font-bold text-slate mb-1 ur-text">Append Redirect — آخر میں جوڑنا</h4>
+              <p class="text-slate-mid text-sm leading-relaxed ur-text">Output کو file کے <strong>آخر میں جوڑتا ہے</strong> بغیر پرانا مٹائے۔ جیسے notepad میں اگلا خالی صفحہ پلٹنا۔ <br/><code>echo "new entry" &gt;&gt; logfile.txt</code></p>
+            </div>
+          </div>
+          <div class="pro-card rounded-2xl p-5 flex items-start gap-4 flex-row-reverse">
+            <code class="text-amber font-bold text-xl flex-shrink-0 mt-0.5">2&gt;</code>
+            <div class="text-right">
+              <h4 class="font-bold text-slate mb-1 ur-text">Error Redirect — غلطیاں پکڑیں</h4>
+              <p class="text-slate-mid text-sm leading-relaxed ur-text">صرف "اوپس!" (stderr) پیغامات الگ file میں محفوظ کرتا ہے۔ Output صاف رکھتا ہے جبکہ debugging کے لیے errors محفوظ کرتا ہے۔ <br/><code>./script.sh 2&gt; errors.log</code></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="terminal-window">
+          <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div><span class="text-white/40 text-xs ml-3 font-mono">pipe chains — real-world examples</span></div>
+          <div class="terminal-body">
+            <span class="cmt"># log میں "error" کتنی بار آیا گنیں</span><br>
+            <span class="ok">$</span> <span class="cmd">cat</span> <span class="arg">server.log</span> <span class="flag">|</span> <span class="cmd">grep</span> <span class="flag">-i</span> <span class="arg">"error"</span> <span class="flag">|</span> <span class="cmd">wc -l</span><br>
+            <span class="ok">47</span><br><br>
+            <span class="cmt"># موجودہ folder کی 5 سب سے بڑی files</span><br>
+            <span class="ok">$</span> <span class="cmd">ls</span> <span class="flag">-lS</span> <span class="flag">|</span> <span class="cmd">head</span> <span class="flag">-n 5</span><br><br>
+            <span class="cmt"># access log میں unique IP addresses نکالیں</span><br>
+            <span class="ok">$</span> <span class="cmd">cat</span> <span class="arg">access.log</span> <span class="flag">|</span> <span class="cmd">awk</span> <span class="arg">'{print $1}'</span> <span class="flag">|</span> <span class="cmd">sort</span> <span class="flag">|</span> <span class="cmd">uniq</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab-pipes -->
+
+
+    <!-- ══ TAB 9: PACKAGES & EDITORS ══ -->
+    <div id="tab-packages" class="tab-panel">
+
+      <div class="analogy-card rounded-2xl p-6 md:p-8 mb-8">
+        <div class="flex items-start gap-4 flex-row-reverse">
+          <div class="text-4xl flex-shrink-0">🏪</div>
+          <div class="text-right">
+            <p class="text-[10px] uppercase tracking-widest text-amber font-bold mb-1" style="font-family:'Roboto Mono',monospace;">آسان وضاحت</p>
+            <h2 class="font-bold text-2xl text-slate mb-3 ur-text">محفوظ محلے کی دکان</h2>
+            <p class="text-slate-mid leading-relaxed ur-text">پرانے طریقے میں آپ کسی بھی website سے software download کرتے اور امید رکھتے کہ virus نہ ہو۔ Linux ایک <strong>Package Manager</strong> استعمال کرتا ہے — آپ کے محلے کی ایک بڑی، محفوظ، جانچی پرکھی دکان۔ ہر چیز safety کے لیے چیک ہوئی ہے۔ Delivery truck (package manager) یہ بھی جانتا ہے کہ کون سی چیز کو کن دوسری چیزوں کی ضرورت ہے اور خود ہی سب لے آتا ہے۔</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-10">
+        <h2 class="font-bold text-2xl text-slate mb-5 flex items-center gap-3 flex-row-reverse ur-text"><span class="text-2xl">🍦</span> Distributions — Linux کے مختلف ذائقے</h2>
+        <p class="text-slate-mid leading-relaxed mb-5 ur-text text-right">چونکہ Linux Open Source ہے، کئی مختلف گروہوں نے اپنے versions بنائے — انہیں <strong>distros</strong> کہتے ہیں۔ سب Linux ہیں (سب آئس کریم ہیں) لیکن مختلف tools اور communities کے ساتھ (مختلف toppings)۔</p>
+        <div class="rounded-2xl overflow-hidden border border-slate/10 shadow-sm mb-6">
+          <table class="oc-table">
+            <thead><tr><th>Distribution Family</th><th>Package Manager</th><th>بہترین استعمال</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Debian / Ubuntu</strong></td><td><code>apt</code></td><td class="ur-text">گھریلو computers، cloud servers، نئے لوگوں کے لیے</td></tr>
+              <tr><td><strong>Red Hat / Fedora / CentOS</strong></td><td><code>dnf</code> یا <code>yum</code></td><td class="ur-text">بڑی companies، AWS AMIs، corporate ماحول</td></tr>
+              <tr><td><strong>Arch Linux</strong></td><td><code>pacman</code></td><td class="ur-text">ماہر users جو scratch سے سب بنانا چاہیں</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="terminal-window mb-8">
+          <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div><span class="text-white/40 text-xs ml-3 font-mono">apt — Ubuntu/Debian کا delivery truck</span></div>
+          <div class="terminal-body">
+            <span class="cmt"># دکان کی فہرست تازہ کریں (نئے versions چیک کریں)</span><br>
+            <span class="ok">$</span> <span class="cmd">sudo</span> <span class="arg">apt update</span><br><br>
+            <span class="cmt"># package install کریں (apt سب ضروری چیزیں خود لاتا ہے)</span><br>
+            <span class="ok">$</span> <span class="cmd">sudo</span> <span class="arg">apt install</span> <span class="path">vlc</span><br><br>
+            <span class="cmt"># تمام installed packages کو latest version پر لائیں</span><br>
+            <span class="ok">$</span> <span class="cmd">sudo</span> <span class="arg">apt upgrade</span><br><br>
+            <span class="cmt"># package ہٹائیں (config files رکھیں)</span><br>
+            <span class="ok">$</span> <span class="cmd">sudo</span> <span class="arg">apt remove</span> <span class="path">vlc</span>
+          </div>
+        </div>
+
+        <h2 class="font-bold text-2xl text-slate mb-5 flex items-center gap-3 flex-row-reverse ur-text"><span class="text-2xl">📝</span> Text Editors — Terminal میں لکھنا</h2>
+        <p class="text-slate-mid leading-relaxed mb-5 ur-text text-right">Linux کو professionally استعمال کرنے کے لیے آپ کو terminal میں config files بنانی اور ایڈٹ کرنی آنی چاہئیں۔ دو editors مشہور ہیں: ایک نئے لوگوں کے لیے آسان، ایک legendary۔</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+          <div class="info-card bg-white rounded-2xl p-6 text-right">
+            <div class="flex items-center gap-3 mb-3 flex-row-reverse">
+              <div class="w-12 h-12 rounded-xl bg-green-50 border border-green-200 flex items-center justify-center text-2xl">📗</div>
+              <div>
+                <p class="tier-badge text-green-700 mb-0.5">نئے لوگوں کے لیے</p>
+                <h3 class="font-bold text-lg text-slate">Nano</h3>
+              </div>
+            </div>
+            <p class="text-slate-mid text-sm leading-relaxed mb-3 ur-text">دوستانہ notepad۔ screen کے نیچے shortcut keys دکھاتا ہے۔ جو لکھیں وہی نظر آئے — بس type کریں اور screen پر نمودار ہو۔</p>
+            <div class="terminal-window">
+              <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div></div>
+              <div class="terminal-body" style="font-size:0.7rem;">
+                <span class="ok">$</span> <span class="cmd">nano</span> <span class="arg">myfile.txt</span><br>
+                <span class="cmt"># اپنا مواد لکھیں</span><br>
+                <span class="warn">Ctrl+O</span> <span class="cmt">→ Save کریں</span><br>
+                <span class="warn">Ctrl+X</span> <span class="cmt">→ باہر نکلیں</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-card bg-white rounded-2xl p-6 text-right">
+            <div class="flex items-center gap-3 mb-3 flex-row-reverse">
+              <div class="w-12 h-12 rounded-xl bg-amber-pale border border-amber/25 flex items-center justify-center text-2xl">🧙</div>
+              <div>
+                <p class="tier-badge text-amber mb-0.5">جادوگر کی چھڑی</p>
+                <h3 class="font-bold text-lg text-slate">Vim</h3>
+              </div>
+            </div>
+            <p class="text-slate-mid text-sm leading-relaxed mb-3 ur-text">مختلف کاموں کے لیے مختلف modes والا editor۔ سیکھنا مشکل ہے، لیکن ایک بار آ جائے تو بہت تیز۔ Vim دنیا کے ہر Linux server پر موجود ہے۔</p>
+            <div class="terminal-window">
+              <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div></div>
+              <div class="terminal-body" style="font-size:0.7rem;">
+                <span class="ok">$</span> <span class="cmd">vim</span> <span class="arg">myfile.txt</span><br>
+                <span class="warn">i</span>     <span class="cmt">→ Insert Mode (یہاں لکھیں)</span><br>
+                <span class="warn">Esc</span>   <span class="cmt">→ Normal Mode میں واپس</span><br>
+                <span class="warn">:wq</span>   <span class="cmt">→ Save کریں اور نکلیں</span><br>
+                <span class="warn">:q!</span>   <span class="cmt">→ بغیر Save کے نکلیں</span><br>
+                <span class="warn">dd</span>    <span class="cmt">→ موجودہ line مٹائیں</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /tab-packages -->
+
+
+    <!-- ══ TAB 10: BOOT PROCESS ══ -->
+    <div id="tab-boot" class="tab-panel">
+
+      <div class="analogy-card rounded-2xl p-6 md:p-8 mb-8">
+        <div class="flex items-start gap-4 flex-row-reverse">
+          <div class="text-4xl flex-shrink-0">⚡</div>
+          <div class="text-right">
+            <p class="text-[10px] uppercase tracking-widest text-amber font-bold mb-1" style="font-family:'Roboto Mono',monospace;">آسان وضاحت</p>
+            <h2 class="font-bold text-2xl text-slate mb-3 ur-text">صبح کا معمول</h2>
+            <p class="text-slate-mid leading-relaxed ur-text">جب آپ power button دباتے ہیں، computer بس "آن" نہیں ہوتا۔ وہ ایک سخت، باترتیب صبح کا معمول پورا کرتا ہے — ہر system کو صحیح ترتیب سے جگاتا ہے تاکہ اگلا شروع ہو سکے۔ جیسے ایک chef کو پہلے عمارت کا تالہ کھولنا ہوتا ہے، پھر چولہا جلانا، پھر team آ کر کام کر سکتی ہے۔</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-10">
+        <h2 class="font-bold text-2xl text-slate mb-6 flex items-center gap-3 flex-row-reverse ur-text"><span class="text-2xl">🌅</span> Boot کے چار مراحل</h2>
+
+        <div class="space-y-4 mb-8">
+
+          <div class="boot-step rounded-xl bg-white border border-slate/10 p-6 flex items-start gap-4 flex-row-reverse">
+            <div class="w-10 h-10 rounded-xl bg-amber flex items-center justify-center text-white font-bold text-lg flex-shrink-0">1</div>
+            <div class="text-right flex-1">
+              <div class="flex items-center gap-2 mb-1 flex-wrap flex-row-reverse">
+                <h4 class="font-bold text-lg text-slate ur-text">BIOS — الارم گھڑی</h4>
+                <span class="tier-badge px-2 py-1 rounded-full bg-amber-pale text-amber border border-amber/30">Firmware Level</span>
+              </div>
+              <p class="text-slate-mid text-sm leading-relaxed ur-text">ایک چھوٹا program جو motherboard کی ایک chip میں ہمیشہ کے لیے لکھا ہوا ہے۔ جب بجلی آتی ہے تو یہ جاگتا ہے اور ایک <strong>POST</strong> (یعنی Power-On Self-Test) کرتا ہے — چیک کرتا ہے کہ چولہا، fridge اور sink سب موجود اور ٹھیک ہیں۔ پھر کوئی bootable device (hard drive یا USB) ڈھونڈتا ہے۔</p>
+            </div>
+          </div>
+
+          <div class="boot-step rounded-xl bg-white border border-slate/10 p-6 flex items-start gap-4 flex-row-reverse">
+            <div class="w-10 h-10 rounded-xl bg-amber flex items-center justify-center text-white font-bold text-lg flex-shrink-0">2</div>
+            <div class="text-right flex-1">
+              <div class="flex items-center gap-2 mb-1 flex-wrap flex-row-reverse">
+                <h4 class="font-bold text-lg text-slate ur-text">MBR اور GRUB — لباس کا انتخاب</h4>
+                <span class="tier-badge px-2 py-1 rounded-full bg-slate/10 text-slate-mid border border-slate/15">Bootloader</span>
+              </div>
+              <p class="text-slate-mid text-sm leading-relaxed ur-text"><strong>MBR</strong> (یعنی Master Boot Record) hard drive کے شروع کا ایک چھوٹا حصہ ہے۔ اس میں اتنا code ہے کہ <strong>GRUB</strong> (bootloader) تلاش کر کے چلائے۔ اگر آپ کے computer پر Windows اور Linux دونوں ہیں، تو GRUB آپ کو پوچھے گا: آج کون سا operating system پہننا ہے؟</p>
+            </div>
+          </div>
+
+          <div class="boot-step rounded-xl bg-white border border-slate/10 p-6 flex items-start gap-4 flex-row-reverse">
+            <div class="w-10 h-10 rounded-xl bg-amber flex items-center justify-center text-white font-bold text-lg flex-shrink-0">3</div>
+            <div class="text-right flex-1">
+              <div class="flex items-center gap-2 mb-1 flex-wrap flex-row-reverse">
+                <h4 class="font-bold text-lg text-slate ur-text">Kernel — Master Chef جاگ اٹھا</h4>
+                <span class="tier-badge px-2 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">OS Core</span>
+              </div>
+              <p class="text-slate-mid text-sm leading-relaxed ur-text">GRUB، Linux kernel کو RAM میں load کرتا ہے۔ Kernel فوری طور پر تمام hardware کا کنٹرول لے لیتا ہے — memory manager شروع کرتا ہے، device drivers چالو کرتا ہے، اور file systems تیار کرتا ہے۔ یہ وہ لمحہ ہے جب Master Chef apron پہنتا ہے، تمام burners جلاتا ہے اور کام کی جگہ تیار کرتا ہے۔</p>
+            </div>
+          </div>
+
+          <div class="boot-step rounded-xl bg-white border border-slate/10 p-6 flex items-start gap-4 flex-row-reverse">
+            <div class="w-10 h-10 rounded-xl bg-green-600 flex items-center justify-center text-white font-bold text-lg flex-shrink-0">4</div>
+            <div class="text-right flex-1">
+              <div class="flex items-center gap-2 mb-1 flex-wrap flex-row-reverse">
+                <h4 class="font-bold text-lg text-slate ur-text">Init اور Services — کاروبار کھلا</h4>
+                <span class="tier-badge px-2 py-1 rounded-full bg-green-50 text-green-700 border border-green-200">Userspace</span>
+              </div>
+              <p class="text-slate-mid text-sm leading-relaxed ur-text">پہلا program جسے kernel چلاتا ہے وہ <strong>init</strong> ہے (Process ID = 1)۔ جدید systems میں یہ <strong>systemd</strong> ہوتا ہے۔ Init وہ manager ہے جو kitchen کھولتا ہے — تمام background services صحیح ترتیب سے شروع کرتا ہے: networking، login screen، web server، database۔ جب init کا کام پورا ہو جائے تو آپ کا system استعمال کے لیے تیار ہے۔</p>
+              <div class="terminal-window mt-3">
+                <div class="terminal-bar"><div class="terminal-dot" style="background:#FF5F57;"></div><div class="terminal-dot" style="background:#FEBC2E;"></div><div class="terminal-dot" style="background:#28C840;"></div></div>
+                <div class="terminal-body" style="font-size:0.72rem;">
+                  <span class="ok">$</span> <span class="cmd">systemctl</span> <span class="arg">status nginx</span>   <span class="cmt">← service کی حالت دیکھیں</span><br>
+                  <span class="ok">$</span> <span class="cmd">systemctl</span> <span class="arg">start nginx</span>    <span class="cmt">← service شروع کریں</span><br>
+                  <span class="ok">$</span> <span class="cmd">systemctl</span> <span class="arg">enable nginx</span>   <span class="cmt">← boot پر خود شروع ہو</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Conclusion -->
+      <div class="rounded-2xl bg-slate p-8 text-white text-right">
+        <p class="text-xs uppercase tracking-widest text-amber font-bold mb-3" style="font-family:'Roboto Mono',monospace;">خلاصہ</p>
+        <h2 class="font-bold text-2xl md:text-3xl mb-4 ur-text">عام User سے Master تک</h2>
+        <p class="text-slate-light leading-relaxed mb-5 ur-text">Linux اور Bash انسانی تعاون کی ایک عظیم کامیابی ہے — ایک operating system جو دنیا چلاتا ہے، کروڑوں لوگوں نے مل کر کھلے طریقے سے بنایا، اور سب کے لیے مفت دستیاب ہے۔ تمام layers سمجھ لیں تو آپ passive user سے active master بن جاتے ہیں — کسی بھی machine کے۔</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6 text-sm">
+          <div class="flex items-start gap-2 flex-row-reverse"><span class="text-amber mt-0.5 flex-shrink-0">→</span><span class="text-slate-light ur-text"><strong class="text-white">Architecture:</strong> Kernel بطور Master Chef، Bash بطور Waiter</span></div>
+          <div class="flex items-start gap-2 flex-row-reverse"><span class="text-amber mt-0.5 flex-shrink-0">→</span><span class="text-slate-light ur-text"><strong class="text-white">File System:</strong> <code class="bg-white/10 text-white">/</code> سے شروع ایک درخت، ہر کمرے کا مقصد</span></div>
+          <div class="flex items-start gap-2 flex-row-reverse"><span class="text-amber mt-0.5 flex-shrink-0">→</span><span class="text-slate-light ur-text"><strong class="text-white">Navigation:</strong> <code class="bg-white/10 text-white">ls · cd · pwd</code> — دیکھیں اور آگے بڑھیں</span></div>
+          <div class="flex items-start gap-2 flex-row-reverse"><span class="text-amber mt-0.5 flex-shrink-0">→</span><span class="text-slate-light ur-text"><strong class="text-white">Permissions:</strong> تین گروہوں کے لیے تین چابیاں — مکمل کنٹرول</span></div>
+          <div class="flex items-start gap-2 flex-row-reverse"><span class="text-amber mt-0.5 flex-shrink-0">→</span><span class="text-slate-light ur-text"><strong class="text-white">Pipes:</strong> <code class="bg-white/10 text-white">|</code> سے آسان tools کو طاقتور chains میں جوڑیں</span></div>
+          <div class="flex items-start gap-2 flex-row-reverse"><span class="text-amber mt-0.5 flex-shrink-0">→</span><span class="text-slate-light ur-text"><strong class="text-white">Boot Process:</strong> BIOS → GRUB → Kernel → Init — صبح کا معمول</span></div>
+        </div>
+        <p class="text-slate-light text-sm leading-relaxed mb-6 ur-text">Recipes اب سب کے لیے کھلی ہیں۔ Tools کو لا تعداد طریقوں سے جوڑا جا سکتا ہے۔ Kitchen آپ کا ہے — پکانا شروع کریں۔</p>
+        <div class="flex flex-wrap gap-3 flex-row-reverse">
+          <a href="what-is-ssh-ur.html"        class="px-4 py-2.5 rounded-xl bg-amber text-white text-sm font-semibold hover:bg-amber-light transition-colors ur-text">← اگلا: SSH کی وضاحت</a>
+          <a href="CloudFundamentals-ur.html"  class="px-4 py-2.5 rounded-xl border border-white/20 text-white text-sm font-semibold hover:bg-white/10 transition-colors ur-text">Cloud Fundamentals →</a>
+          <a href="index-ur.html"              class="px-4 py-2.5 rounded-xl border border-white/20 text-white text-sm font-semibold hover:bg-white/10 transition-colors ur-text">تمام موضوعات →</a>
+        </div>
+      </div>
+
+    </div><!-- /tab-boot -->
+
+  </main>
+</div>
+
+
+<!-- FOOTER -->
+<footer class="py-10 px-5 bg-cream-dark">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row-reverse items-center justify-between gap-5">
+    <div class="flex items-center gap-2.5 flex-row-reverse">
+      <div class="w-7 h-7 rounded-lg bg-slate flex items-center justify-center">
+        <span class="text-white font-bold text-xs logo-text">OC</span>
+      </div>
+      <span class="font-semibold text-slate text-base logo-text">Open<span class="text-amber">·</span>Concepts</span>
+    </div>
+    <div class="mt-12 pb-8 text-center">
+      <p class="text-slate-light/70 text-sm font-medium flex items-center justify-center gap-3 flex-wrap">
+        <span class="ur-text">❤️ کے ساتھ بنایا</span>
+        <span style="font-family: 'MySignature', cursive; font-size: 4.5rem; line-height: 1; transform: rotate(-1deg); margin-top: -5px;" class="text-slate antialiased">Anwaar</span>
+        <span class="ur-text">· کوئی پیچیدگی نہیں، صرف وضاحت۔</span>
+      </p>
+    </div>
+    <div class="flex items-center gap-5">
+      <a href="index-ur.html#topics"   class="text-slate-light hover:text-slate transition-colors ur-text">موضوعات</a>
+      <a href="index-ur.html#roadmaps" class="text-slate-light hover:text-slate transition-colors ur-text">راستے</a>
+      <a href="index-ur.html#about"    class="text-slate-light hover:text-slate transition-colors ur-text">بارے میں</a>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════ SCRIPTS ═══════════════════ -->
+<script>
+  function toggleMenu() { document.getElementById('mobile-menu').classList.toggle('open'); }
+  function closeMenu()  { document.getElementById('mobile-menu').classList.remove('open'); }
+
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrolled = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+    document.getElementById('read-progress').style.width = (scrolled * 100) + '%';
+    document.getElementById('navbar').style.boxShadow =
+      doc.scrollTop > 10 ? '0 4px 24px rgba(35,47,62,0.10)' : 'none';
+  });
+
+  function switchTab(id) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(b  => b.classList.toggle('active', b.dataset.tab === id));
+    document.querySelectorAll('.toc-link').forEach(l  => l.classList.toggle('active', l.dataset.tab === id));
+    if (id === 'history') setTimeout(renderOpenSourceChart, 150);
+  }
+
+  let osChartInstance = null;
+  function renderOpenSourceChart() {
+    const ctx = document.getElementById('openSourceChart');
+    if (!ctx) return;
+    if (osChartInstance) osChartInstance.destroy();
+
+    osChartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['قیمت', 'تبدیل کر سکتے ہیں؟', 'Portable ہے؟', 'Community Support', 'Security Fixes'],
+        datasets: [
+          {
+            label: 'Proprietary Systems (Linux سے پہلے)',
+            data: [1, 0, 2, 1, 2],
+            backgroundColor: 'rgba(107,127,145,0.70)',
+            borderColor: '#6B7F91',
+            borderRadius: 6, borderWidth: 1.5,
+          },
+          {
+            label: 'Linux / Open Source',
+            data: [10, 10, 9, 10, 9],
+            backgroundColor: 'rgba(255,153,0,0.80)',
+            borderColor: '#FF9900',
+            borderRadius: 6, borderWidth: 1.5,
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top' },
+          tooltip: {
+            backgroundColor: 'rgba(35,47,62,0.95)',
+            titleFont: { size: 13, family: 'DM Sans' },
+            bodyFont:  { size: 12, family: 'Roboto Mono' },
+            padding: 12,
+          }
+        },
+        scales: {
+          x: { grid: { display: false } },
+          y: {
+            title: { display: true, text: 'Score (0 = بدترین، 10 = بہترین)', font: { weight: 'bold', size: 11 } },
+            grid: { color: '#F1EDE7' },
+            suggestedMin: 0, suggestedMax: 11
+          }
+        }
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(renderOpenSourceChart, 300);
+  });
+
+  /* ══ LANGUAGE TOGGLE ══ */
+  function positionThumb(side) {
+    var switcher = document.getElementById('langSwitcher');
+    var thumb    = document.getElementById('langThumb');
+    var optEn    = document.getElementById('optEn');
+    var optUr    = document.getElementById('optUr');
+    if (!switcher || !thumb) return;
+    var enRect = optEn.getBoundingClientRect();
+    var urRect = optUr.getBoundingClientRect();
+    var swRect = switcher.getBoundingClientRect();
+    if (side === 'ur') {
+      thumb.style.left  = (urRect.left - swRect.left - 4) + 'px';
+      thumb.style.width = (urRect.width + 8) + 'px';
+      optUr.classList.replace('inactive', 'active');
+      optEn.classList.replace('active', 'inactive');
+    } else {
+      thumb.style.left  = (enRect.left - swRect.left - 4) + 'px';
+      thumb.style.width = (enRect.width + 8) + 'px';
+      optEn.classList.replace('inactive', 'active');
+      optUr.classList.replace('active', 'inactive');
+    }
+  }
+
+  function switchLang() {
+    positionThumb('en');
+    setTimeout(function() { window.location.href = 'what-is-bash.html'; }, 320);
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() { positionThumb('ur'); });
+    });
+  });
+
+  window.addEventListener('resize', function() { positionThumb('ur'); });
+</script>
+</body>
+</html>
